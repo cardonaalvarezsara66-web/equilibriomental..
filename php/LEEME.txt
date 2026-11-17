@@ -1,0 +1,20 @@
+COMO CONECTAR CON XAMPP
+========================
+
+1. Copia toda la carpeta "ai" dentro de:  C:\xampp\htdocs\
+   (debe quedar:  C:\xampp\htdocs\ai\ )
+
+2. Abre el panel de XAMPP y arranca Apache y MySQL.
+
+3. Entra a phpMyAdmin:    http://localhost/phpmyadmin
+   - Importa el archivo: ai/php/base-de-datos.sql
+   - Esto crea la base "infiel" y la tabla "usuarios".
+
+4. Si tu MySQL usa otra clave, edita ai/php/conexion.php
+   y cambia $db_user / $db_pass.
+
+5. Abre el sitio en el navegador:
+   http://localhost/ai/html/inicio-de-sesion.html
+
+   Registrate, inicia sesion y los datos quedaran guardados
+   en la base de datos MySQL (no en localStorage).
