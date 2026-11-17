@@ -1,0 +1,665 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Panel de la psicóloga - Equilibrio Mental</title>
+
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <style>
+    .navbar .icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar .desktop-icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #nombre-usuario {
+      display: inline-block;
+      color: #1a1a1a;
+      font-weight: 600;
+      opacity: 1;
+      white-space: nowrap;
+      font-size: 0.95rem;
+    }
+
+    .btn-cerrar-sesion {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 255, 255, .35);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .08);
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .btn-cerrar-sesion:hover {
+      background: rgba(255, 255, 255, .18);
+    }
+
+    @media (max-width: 600px) {
+      .navbar .desktop-icons {
+        gap: 8px;
+      }
+
+      .btn-cerrar-sesion {
+        padding: 9px;
+      }
+
+      .texto-cerrar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="inner container">
+    <a href="panel-administradora.html" class="logo">
+      <img src="../img/logo.png" alt="Logo de Equilibrio Mental">
+      <span>Equilibrio mental</span>
+    </a>
+
+    <div class="icons">
+      <div class="desktop-icons">
+        <a href="perfil.html" title="Perfil" aria-label="Perfil">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+        </a>
+
+        <span id="nombre-usuario" data-user-name>Psicóloga</span>
+
+        <button
+          type="button"
+          class="btn-cerrar-sesion"
+          onclick="cerrarSesion()"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
+        >
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+          <span class="texto-cerrar">Cerrar sesión</span>
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="hamburger"
+        onclick="toggleMobileNav()"
+        aria-label="Abrir menú"
+      >☰</button>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" id="mobile-nav"></nav>
+</header>
+
+<main style="min-height:100vh;padding-top:6rem;">
+  <section class="section">
+    <div class="container">
+
+      <h1 class="section-title anim-up" style="font-size:2.5rem;">
+        <span class="text-gradient">Panel</span> de citas
+      </h1>
+
+      <p class="text-muted anim-up-d1 mb-3">
+        Aquí ves únicamente las citas agendadas contigo.
+      </p>
+
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+        <button
+          class="btn btn-primary"
+          data-vista="citas"
+          onclick="verVista('citas')"
+        >
+          📅 Mis citas
+        </button>
+
+        <button
+          class="btn btn-outline"
+          data-vista="horarios"
+          onclick="verVista('horarios')"
+        >
+          🕒 Mis horarios
+        </button>
+      </div>
+
+      <!-- CITAS -->
+      <div id="vista-citas">
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+          <button
+            class="btn btn-primary"
+            data-filtro="pendiente"
+            onclick="filtrar('pendiente')"
+          >
+            Pendientes
+          </button>
+
+          <button
+            class="btn btn-outline"
+            data-filtro="confirmada"
+            onclick="filtrar('confirmada')"
+          >
+            Confirmadas
+          </button>
+
+          <button
+            class="btn btn-outline"
+            data-filtro="realizada"
+            onclick="filtrar('realizada')"
+          >
+            Realizadas
+          </button>
+
+          <button
+            class="btn btn-outline"
+            data-filtro="cancelada"
+            onclick="filtrar('cancelada')"
+          >
+            Canceladas
+          </button>
+
+          <button
+            class="btn btn-outline"
+            data-filtro="todas"
+            onclick="filtrar('todas')"
+          >
+            Todas
+          </button>
+        </div>
+
+        <div
+          id="lista-citas"
+          style="display:flex;flex-direction:column;gap:1rem;"
+        ></div>
+      </div>
+
+      <!-- HORARIOS -->
+      <div id="vista-horarios" style="display:none;">
+        <div class="glass-card" style="margin-bottom:1.5rem;">
+          <p style="font-weight:600;margin-bottom:.75rem;">
+            Agregar bloque disponible
+          </p>
+
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;">
+            <div>
+              <label class="text-sm text-muted" for="h-dia">Día</label>
+              <select id="h-dia" class="input-field">
+                <option value="1">Lunes</option>
+                <option value="2">Martes</option>
+                <option value="3">Miércoles</option>
+                <option value="4">Jueves</option>
+                <option value="5">Viernes</option>
+                <option value="6">Sábado</option>
+                <option value="7">Domingo</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-sm text-muted" for="h-inicio">Desde</label>
+              <input
+                type="time"
+                id="h-inicio"
+                class="input-field"
+                value="08:00"
+              >
+            </div>
+
+            <div>
+              <label class="text-sm text-muted" for="h-fin">Hasta</label>
+              <input
+                type="time"
+                id="h-fin"
+                class="input-field"
+                value="12:00"
+              >
+            </div>
+
+            <button class="btn btn-primary" onclick="agregarHorario()">
+              Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Día</th>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-horarios"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<script src="../js/script.js"></script>
+
+<script>
+  var todasLasCitas = [];
+  var filtroActual = "pendiente";
+
+  var estadoLabels = {
+    pendiente: {
+      texto: "⏳ Pendiente",
+      color: "#a06c00",
+      fondo: "#fff3d6"
+    },
+    confirmada: {
+      texto: "✅ Confirmada",
+      color: "#0a6b3d",
+      fondo: "#d9f5e6"
+    },
+    cancelada: {
+      texto: "✖ Cancelada",
+      color: "#8b0a2a",
+      fondo: "#fbe0e6"
+    },
+    realizada: {
+      texto: "☑ Realizada",
+      color: "#333",
+      fondo: "#eee"
+    }
+  };
+
+  var dias = {
+    1: "Lunes",
+    2: "Martes",
+    3: "Miércoles",
+    4: "Jueves",
+    5: "Viernes",
+    6: "Sábado",
+    7: "Domingo"
+  };
+
+  // MOSTRAR EL NOMBRE GUARDADO
+  function mostrarNombreUsuario() {
+    var elemento = document.getElementById("nombre-usuario");
+
+    if (!elemento) return;
+
+    if (typeof getUser !== "function") {
+      elemento.textContent = "Psicóloga";
+      return;
+    }
+
+    var usuario = getUser();
+
+    if (usuario) {
+      elemento.textContent =
+        usuario.name ||
+        usuario.nombre ||
+        usuario.nombre_usuario ||
+        "Psicóloga";
+    } else {
+      elemento.textContent = "Psicóloga";
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", mostrarNombreUsuario);
+
+  // CERRAR SESIÓN
+  async function cerrarSesion() {
+    if (!confirm("¿Deseas cerrar tu sesión?")) return;
+
+    try {
+      await fetch("../php/logout.php", {
+        method: "POST",
+        credentials: "include"
+      });
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+
+    if (typeof removeUser === "function") {
+      removeUser();
+    }
+
+    window.location.replace("inicio-de-sesion.html");
+  }
+
+  // ESCAPAR TEXTO
+  function escapar(texto) {
+    return String(texto == null ? "" : texto).replace(/[&<>"']/g, function(c) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[c];
+    });
+  }
+
+  // ETIQUETA DE ESTADO
+  function badge(estado) {
+    var info = estadoLabels[estado] || {
+      texto: estado || "Sin estado",
+      color: "#333",
+      fondo: "#eee"
+    };
+
+    return '<span style="background:' + info.fondo +
+      ';color:' + info.color +
+      ';padding:.25rem .6rem;border-radius:999px;font-size:.8rem;font-weight:600;">' +
+      escapar(info.texto) + '</span>';
+  }
+
+  // FILTRAR CITAS
+  function filtrar(estado) {
+    filtroActual = estado;
+
+    document.querySelectorAll("[data-filtro]").forEach(function(boton) {
+      var activo = boton.dataset.filtro === estado;
+      boton.classList.toggle("btn-primary", activo);
+      boton.classList.toggle("btn-outline", !activo);
+    });
+
+    render();
+  }
+
+  // MOSTRAR CITAS
+  function render() {
+    var contenedor = document.getElementById("lista-citas");
+
+    var citas = filtroActual === "todas"
+      ? todasLasCitas
+      : todasLasCitas.filter(function(cita) {
+          return cita.estado === filtroActual;
+        });
+
+    if (!citas.length) {
+      contenedor.innerHTML =
+        '<p class="text-muted">No hay citas en este filtro.</p>';
+      return;
+    }
+
+    contenedor.innerHTML = "";
+
+    citas.forEach(function(cita) {
+      var div = document.createElement("div");
+      div.className = "glass-card";
+
+      div.style.display = "flex";
+      div.style.justifyContent = "space-between";
+      div.style.alignItems = "center";
+      div.style.flexWrap = "wrap";
+      div.style.gap = "1rem";
+
+      var acciones = "";
+
+      if (cita.estado === "pendiente") {
+        acciones =
+          '<button class="btn btn-primary" onclick="actualizar(' +
+          Number(cita.id_cita) + ',\'confirmar\')">Confirmar</button>' +
+          '<button class="btn btn-outline" onclick="actualizar(' +
+          Number(cita.id_cita) + ',\'cancelar\')">Cancelar</button>';
+
+      } else if (cita.estado === "confirmada") {
+        acciones =
+          '<button class="btn btn-primary" onclick="actualizar(' +
+          Number(cita.id_cita) + ',\'realizar\')">Marcar realizada</button>' +
+          '<button class="btn btn-outline" onclick="actualizar(' +
+          Number(cita.id_cita) + ',\'cancelar\')">Cancelar</button>';
+      }
+
+      div.innerHTML =
+        '<div>' +
+          '<p style="font-weight:600;">' + escapar(cita.usuario) + '</p>' +
+          '<p class="text-muted text-sm">' +
+            escapar(cita.correo_usuario) +
+          '</p>' +
+          '<p class="text-muted text-sm">' +
+            escapar(cita.fecha) + ' — ' +
+            escapar(String(cita.hora || "").substring(0, 5)) +
+          '</p>' +
+          (cita.notas
+            ? '<p class="text-sm" style="margin-top:.35rem;">📝 ' +
+              escapar(cita.notas) + '</p>'
+            : '') +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;">' +
+          badge(cita.estado) +
+          '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">' +
+            acciones +
+          '</div>' +
+        '</div>';
+
+      contenedor.appendChild(div);
+    });
+  }
+
+  // CARGAR CITAS
+  async function cargarCitas() {
+    var contenedor = document.getElementById("lista-citas");
+
+    try {
+      var respuesta = await fetch("../php/citas-psicologa.php", {
+        credentials: "include"
+      });
+
+      var data = await respuesta.json();
+
+      if (!data.ok) {
+        contenedor.innerHTML =
+          '<p class="text-muted">' +
+          escapar(data.mensaje || "No autorizada.") +
+          '</p>';
+        return;
+      }
+
+      todasLasCitas = Array.isArray(data.citas) ? data.citas : [];
+      render();
+
+    } catch (error) {
+      console.error(error);
+      contenedor.innerHTML =
+        '<p class="text-muted">' +
+        'No fue posible cargar las citas. Revisa el servidor.' +
+        '</p>';
+    }
+  }
+
+  // ACTUALIZAR CITA
+  async function actualizar(idCita, accion) {
+    try {
+      var datos = new FormData();
+      datos.append("id_cita", idCita);
+      datos.append("accion", accion);
+
+      var respuesta = await fetch("../php/actualizar-cita.php", {
+        method: "POST",
+        body: datos,
+        credentials: "include"
+      });
+
+      var data = await respuesta.json();
+
+      if (!data.ok) {
+        alert("❌ " + (data.mensaje || "No se pudo actualizar la cita."));
+        return;
+      }
+
+      await cargarCitas();
+
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo actualizar la cita.");
+    }
+  }
+
+  // CAMBIAR VISTA
+  function verVista(vista) {
+    document.getElementById("vista-citas").style.display =
+      vista === "citas" ? "" : "none";
+
+    document.getElementById("vista-horarios").style.display =
+      vista === "horarios" ? "" : "none";
+
+    document.querySelectorAll("[data-vista]").forEach(function(boton) {
+      var activo = boton.dataset.vista === vista;
+      boton.classList.toggle("btn-primary", activo);
+      boton.classList.toggle("btn-outline", !activo);
+    });
+
+    if (vista === "horarios") cargarHorarios();
+  }
+
+  // CARGAR HORARIOS
+  async function cargarHorarios() {
+    var tbody = document.getElementById("tabla-horarios");
+
+    try {
+      var respuesta = await fetch("../php/horarios-mios.php", {
+        credentials: "include"
+      });
+
+      var data = await respuesta.json();
+
+      if (!data.ok) {
+        tbody.innerHTML =
+          '<tr><td colspan="4">' +
+          escapar(data.mensaje || "No autorizada.") +
+          '</td></tr>';
+        return;
+      }
+
+      if (!Array.isArray(data.horarios) || !data.horarios.length) {
+        tbody.innerHTML =
+          '<tr><td colspan="4">' +
+          'Todavía no tienes bloques de horario.' +
+          '</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.horarios.map(function(horario) {
+        return '<tr>' +
+          '<td>' +
+            escapar(dias[horario.dia_semana] || "Sin día") +
+          '</td>' +
+          '<td>' +
+            escapar(String(horario.hora_inicio || "").substring(0, 5)) +
+          '</td>' +
+          '<td>' +
+            escapar(String(horario.hora_fin || "").substring(0, 5)) +
+          '</td>' +
+          '<td><button class="btn btn-outline" onclick="eliminarHorario(' +
+            Number(horario.id_horario) +
+            ')">Eliminar</button></td>' +
+          '</tr>';
+      }).join("");
+
+    } catch (error) {
+      console.error(error);
+      tbody.innerHTML =
+        '<tr><td colspan="4">No se pudieron cargar los horarios.</td></tr>';
+    }
+  }
+
+  // AGREGAR HORARIO
+  async function agregarHorario() {
+    var inicio = document.getElementById("h-inicio").value;
+    var fin = document.getElementById("h-fin").value;
+
+    if (!inicio || !fin || inicio >= fin) {
+      alert("La hora inicial debe ser anterior a la hora final.");
+      return;
+    }
+
+    try {
+      var datos = new FormData();
+      datos.append("dia_semana", document.getElementById("h-dia").value);
+      datos.append("hora_inicio", inicio);
+      datos.append("hora_fin", fin);
+
+      var respuesta = await fetch("../php/horarios-guardar.php", {
+        method: "POST",
+        body: datos,
+        credentials: "include"
+      });
+
+      var data = await respuesta.json();
+
+      if (!data.ok) {
+        alert("❌ " + (data.mensaje || "No se pudo guardar el horario."));
+        return;
+      }
+
+      await cargarHorarios();
+
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo guardar el horario.");
+    }
+  }
+
+  // ELIMINAR HORARIO
+  async function eliminarHorario(idHorario) {
+    if (!confirm("¿Eliminar este bloque de horario?")) return;
+
+    try {
+      var datos = new FormData();
+      datos.append("id_horario", idHorario);
+
+      var respuesta = await fetch("../php/horarios-eliminar.php", {
+        method: "POST",
+        body: datos,
+        credentials: "include"
+      });
+
+      var data = await respuesta.json();
+
+      if (!data.ok) {
+        alert("❌ " + (data.mensaje || "No se pudo eliminar el horario."));
+        return;
+      }
+
+      await cargarHorarios();
+
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo eliminar el horario.");
+    }
+  }
+
+  // COMPROBAR ACCESO
+  async function verificarAcceso() {
+    var usuario = typeof getUser === "function" ? getUser() : null;
+
+    if (!usuario || usuario.rol !== "administradora") {
+      window.location.replace("inicio-de-sesion.html");
+      return;
+    }
+
+    mostrarNombreUsuario();
+    await cargarCitas();
+  }
+
+  verificarAcceso();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Agendar cita - Equilibrio Mental</title>
+
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  >
+
+  <style>
+    /* =========================================
+       TARJETA DE LA PSICÓLOGA
+    ========================================= */
+
+    .psicologa-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      margin-top: .75rem;
+      border-radius: 16px;
+      background: var(--secondary, #f3f0fa);
+      border: 1px solid rgba(128, 128, 128, .2);
+      overflow: hidden;
+    }
+
+    /* Contenedor circular de la fotografía */
+    .psicologa-foto-contenedor {
+      width: 90px;
+      height: 90px;
+      flex: 0 0 90px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #e9e1f7;
+      position: relative;
+    }
+
+    /* Fotografía circular */
+    .psicologa-foto-contenedor .psicologa-foto {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 50%;
+    }
+
+    /* Inicial cuando no existe una fotografía */
+    .psicologa-foto-contenedor .psicologa-foto-fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--primary, #8064c9);
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .psicologa-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .psicologa-nombre {
+      margin: 0 0 .35rem;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .psicologa-especialidad {
+      margin: 0 0 .4rem;
+      font-size: .9rem;
+      opacity: .8;
+    }
+
+    .estrellas {
+      color: #f5b301;
+      letter-spacing: 2px;
+    }
+
+    .estrellas .vacia {
+      color: #aaa;
+    }
+
+    #lista-horarios .btn {
+      cursor: pointer;
+    }
+
+    #lista-horarios .btn:focus-visible {
+      outline: 2px solid #8064c9;
+      outline-offset: 3px;
+    }
+
+    #lista-horarios .btn[aria-pressed="true"] {
+      background: var(--primary, #8064c9);
+      color: white;
+      border-color: var(--primary, #8064c9);
+    }
+
+    .cita-item {
+      background: var(--secondary, #f3f0fa);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .cita-item p {
+      overflow-wrap: anywhere;
+    }
+
+    #msg-agendar {
+      white-space: pre-line;
+    }
+
+    @media (max-width: 600px) {
+      .psicologa-card {
+        align-items: flex-start;
+      }
+
+      .psicologa-foto-contenedor {
+        width: 72px;
+        height: 72px;
+        flex-basis: 72px;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar" id="navbar">
+    <div class="inner container">
+      <a href="inicio.html" class="logo">
+        <img src="../img/logo.png" alt="Logo de Equilibrio Mental">
+        <span>Equilibrio mental</span>
+      </a>
+
+      <nav class="center-nav">
+        <a href="inicio.html">Inicio</a>
+        <a href="vinculacion.html">Vinculación</a>
+        <a href="agendar-cita.html" class="active">Agendar cita</a>
+        <a href="tienda.html">Tienda</a>
+      </nav>
+
+      <div class="oval-icons">
+        <a href="perfil.html" title="Perfil" aria-label="Perfil">
+          <i class="fa-solid fa-user"></i>
+        </a>
+
+        <a
+          href="#"
+          onclick="logout(); return false;"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
+>
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </a>
+
+
+        <a href="ia.html" title="IA" aria-label="Inteligencia artificial">
+          <i class="fa-solid fa-robot"></i>
+        </a>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav">
+      <a href="inicio.html">Inicio</a>
+      <a href="vinculacion.html">Vinculación</a>
+      <a href="agendar-cita.html">Agendar cita</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="carrito.html">Carrito</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="ia.html">IA</a>
+    </nav>
+  </header>
+
+  <main style="min-height:100vh;padding-top:6rem;">
+    <section class="section">
+      <div class="container">
+
+        <h1 class="section-title anim-up" style="font-size:2.5rem;">
+          <span class="text-gradient">Agendar</span> una cita
+        </h1>
+
+        <p class="text-muted anim-up-d1 mb-3" style="max-width:720px;">
+          Elige una psicóloga, una fecha y una hora disponible.
+          La cita quedará <strong>pendiente</strong> hasta que la psicóloga
+          la confirme.
+        </p>
+
+        <div class="grid-2" style="display:grid;gap:2rem;">
+
+          <!-- FORMULARIO PARA AGENDAR -->
+          <section class="glass-card">
+            <h2 style="font-size:1.3rem;margin-bottom:1rem;">
+              Nueva cita
+            </h2>
+
+            <div style="margin-bottom:1rem;">
+              <label for="sel-psicologa" class="label">
+                Psicóloga
+              </label>
+
+              <select
+                id="sel-psicologa"
+                class="input-field"
+                required
+              >
+                <option value="">Selecciona una psicóloga</option>
+              </select>
+
+              <div id="tarjeta-psicologa" style="margin-top:.5rem;"></div>
+            </div>
+
+            <div style="margin-bottom:1rem;">
+              <label for="sel-fecha" class="label">Fecha</label>
+
+              <input
+                type="date"
+                id="sel-fecha"
+                class="input-field"
+                required
+              >
+            </div>
+
+            <div style="margin-bottom:1rem;">
+              <label class="label">Hora disponible</label>
+
+              <div
+                id="lista-horarios"
+                style="display:flex;flex-wrap:wrap;gap:.5rem;"
+                aria-live="polite"
+              >
+                <p class="text-muted text-sm">
+                  Elige psicóloga y fecha para ver horarios.
+                </p>
+              </div>
+            </div>
+
+            <div style="margin-bottom:1rem;">
+              <label for="notas" class="label">
+                Notas (opcional)
+              </label>
+
+              <textarea
+                id="notas"
+                class="input-field"
+                rows="3"
+                maxlength="1000"
+                placeholder="Cuéntale brevemente el motivo de tu consulta..."
+              ></textarea>
+            </div>
+
+            <button
+              id="btn-agendar"
+              type="button"
+              class="btn btn-primary btn-block btn-lg"
+              disabled
+            >
+              Solicitar cita
+            </button>
+
+            <div
+              id="msg-agendar"
+              class="alert-box mt-2"
+              style="display:none;"
+              role="status"
+              aria-live="polite"
+            ></div>
+          </section>
+
+          <!-- CITAS DEL USUARIO -->
+          <section class="glass-card">
+            <h2 style="font-size:1.3rem;margin-bottom:1rem;">
+              Mis citas
+            </h2>
+
+            <div
+              id="lista-citas"
+              style="display:flex;flex-direction:column;gap:.75rem;"
+              aria-live="polite"
+            >
+              <p class="text-muted text-sm">Cargando tus citas...</p>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </section>
+  </main>
+      <footer class="footer">
+  <div class="container footer-layout">
+
+    <img
+      class="footer-logo"
+      src="../img/logo_lola.png"
+      alt="Logo de Lola González"
+    >
+
+    <div class="footer-contenido">
+      <div class="footer-grid">
+        <section>
+          <h3>¿Necesitas ayuda?</h3>
+          <p>Estamos aquí para escucharte. No estás sola.</p>
+        </section>
+
+        <section class="footer-contacto">
+          <a href="mailto:descubretuinfiel@tusitio.com">
+            descubretuinfiel@tusitio.com
+          </a>
+          <a href="tel:+573001234567">+57 300 123 4567</a>
+          <span>WhatsApp disponible 24/7</span>
+        </section>
+
+        <section>
+          <h4>Términos de uso</h4>
+          <p>
+            Este sitio ofrece información orientativa. No sustituye asesoría
+            profesional. Al usar este sitio aceptas nuestras condiciones generales.
+          </p>
+        </section>
+      </div>
+
+      <div class="footer-bottom">Hecho con amor para tu bienestar</div>
+    </div>
+
+    <img
+      class="footer-logo"
+      src="../img/logo_pascual.png"
+      alt="Logo de la Institución Universitaria Pascual Bravo"
+    >
+
+  </div>
+</footer>
+
+   
+
+
+
+  <script src="../js/script.js"></script>
+
+  <script>
+    "use strict";
+
+    /* =========================================
+       CONFIGURACIÓN DE LOS ARCHIVOS PHP
+    ========================================= */
+
+    const API = {
+      psicologas: "../php/lista-psicologas.php",
+      horarios: "../php/horarios-disponibles.php",
+      agendar: "../php/agendar-cita.php",
+      citas: "../php/mis-citas.php"
+    };
+
+    const estadoLabels = {
+      pendiente: {
+        texto: "⏳ Pendiente",
+        color: "#a06c00",
+        fondo: "#fff3d6"
+      },
+      confirmada: {
+        texto: "✅ Confirmada",
+        color: "#0a6b3d",
+        fondo: "#d9f5e6"
+      },
+      cancelada: {
+        texto: "✖ Cancelada",
+        color: "#8b0a2a",
+        fondo: "#fbe0e6"
+      },
+      realizada: {
+        texto: "☑ Realizada",
+        color: "#333",
+        fondo: "#eee"
+      }
+    };
+
+    let listaPsicologas = [];
+    let solicitudHorarios = 0;
+    let enviandoCita = false;
+
+    /* =========================================
+       ELEMENTOS DEL HTML
+    ========================================= */
+
+    const selPsicologa = document.getElementById("sel-psicologa");
+    const selFecha = document.getElementById("sel-fecha");
+    const tarjetaPsicologa = document.getElementById("tarjeta-psicologa");
+    const listaHorarios = document.getElementById("lista-horarios");
+    const listaCitas = document.getElementById("lista-citas");
+    const botonAgendar = document.getElementById("btn-agendar");
+    const mensajeAgendar = document.getElementById("msg-agendar");
+    const campoNotas = document.getElementById("notas");
+
+    /* =========================================
+       FUNCIONES GENERALES
+    ========================================= */
+
+    function crearTexto(tag, texto, clase) {
+      const elemento = document.createElement(tag);
+
+      elemento.textContent = texto == null ? "" : String(texto);
+
+      if (clase) {
+        elemento.className = clase;
+      }
+
+      return elemento;
+    }
+
+    function fechaLocalISO() {
+      const ahora = new Date();
+      const anio = ahora.getFullYear();
+      const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+      const dia = String(ahora.getDate()).padStart(2, "0");
+
+      return `${anio}-${mes}-${dia}`;
+    }
+
+    function obtenerEstado(estado) {
+      return String(estado || "").trim().toLowerCase();
+    }
+
+    function crearBadge(estado) {
+      const clave = obtenerEstado(estado);
+
+      const info = estadoLabels[clave] || {
+        texto: estado || "Sin estado",
+        color: "#333",
+        fondo: "#eee"
+      };
+
+      const etiqueta = document.createElement("span");
+
+      etiqueta.textContent = info.texto;
+      etiqueta.style.cssText =
+        "background:" + info.fondo + ";" +
+        "color:" + info.color + ";" +
+        "padding:.25rem .6rem;" +
+        "border-radius:999px;" +
+        "font-size:.8rem;" +
+        "font-weight:600;";
+
+      return etiqueta;
+    }
+
+    function mostrarMensaje(texto, tipo) {
+      mensajeAgendar.style.display = "flex";
+      mensajeAgendar.className = "alert-box mt-2 " + tipo;
+      mensajeAgendar.textContent = texto;
+    }
+
+    function ocultarMensaje() {
+      mensajeAgendar.style.display = "none";
+      mensajeAgendar.textContent = "";
+    }
+
+    async function consultarJSON(url, opciones = {}) {
+      const respuesta = await fetch(url, {
+        credentials: "include",
+        ...opciones
+      });
+
+      const contenido = await respuesta.text();
+
+      let data;
+
+      try {
+        data = JSON.parse(contenido);
+      } catch {
+        throw new Error(
+          "El servidor no devolvió JSON válido. Revisa el archivo PHP."
+        );
+      }
+
+      if (!respuesta.ok) {
+        throw new Error(
+          data.mensaje || ("Error HTTP " + respuesta.status)
+        );
+      }
+
+      return data;
+    }
+
+    /* =========================================
+       RUTAS DE LAS FOTOGRAFÍAS
+    ========================================= */
+
+    function obtenerRutaFoto(ruta) {
+      if (typeof ruta !== "string" || !ruta.trim()) {
+        return "";
+      }
+
+      ruta = ruta.trim().replace(/\\/g, "/");
+
+      // Permitir imágenes externas y data URLs de imagen.
+      if (/^https?:\/\//i.test(ruta)) {
+        return ruta;
+      }
+
+      if (/^data:image\//i.test(ruta)) {
+        return ruta;
+      }
+
+      // Las rutas físicas de Windows no funcionan en el navegador.
+      if (/^[a-zA-Z]:\//.test(ruta) || ruta.startsWith("//")) {
+        return "";
+      }
+
+      // Ruta absoluta dentro del servidor.
+      if (ruta.startsWith("/")) {
+        return ruta;
+      }
+
+      // Ruta que ya comienza desde la carpeta superior.
+      if (ruta.startsWith("../")) {
+        return ruta;
+      }
+
+      // Ruta relativa que comienza con ./.
+      if (ruta.startsWith("./")) {
+        return "../" + ruta.slice(2);
+      }
+
+      // Si PHP devuelve únicamente el nombre del archivo.
+      if (!ruta.includes("/")) {
+        return "../img/" + ruta;
+      }
+
+      // Si PHP devuelve img/foto.jpg o uploads/foto.jpg.
+      return "../" + ruta.replace(/^\/+/, "");
+    }
+
+    /* =========================================
+       TARJETA DE LA PSICÓLOGA
+    ========================================= */
+
+    function mostrarInicial(contenedor, nombre) {
+      contenedor.replaceChildren();
+
+      const inicial = String(nombre || "P")
+        .trim()
+        .charAt(0)
+        .toUpperCase() || "P";
+
+      const circulo = crearTexto(
+        "div",
+        inicial,
+        "psicologa-foto psicologa-foto-fallback"
+      );
+
+      circulo.setAttribute(
+        "aria-label",
+        "Inicial de la psicóloga"
+      );
+
+      contenedor.appendChild(circulo);
+    }
+
+    function crearEstrellas(calificacion) {
+      let cal = Number(calificacion);
+
+      if (!Number.isFinite(cal)) {
+        cal = 0;
+      }
+
+      cal = Math.max(0, Math.min(5, cal));
+
+      const contenedor = document.createElement("span");
+      const estrellas = document.createElement("span");
+
+      estrellas.className = "estrellas";
+      estrellas.setAttribute(
+        "aria-label",
+        cal + " de 5 estrellas"
+      );
+
+      const llenas = Math.round(cal);
+
+      for (let i = 1; i <= 5; i++) {
+        const estrella = document.createElement("span");
+
+        estrella.textContent = "★";
+
+        if (i > llenas) {
+          estrella.className = "vacia";
+        }
+
+        estrellas.appendChild(estrella);
+      }
+
+      const numero = crearTexto(
+        "span",
+        " " + cal.toFixed(1),
+        "text-muted text-sm"
+      );
+
+      contenedor.append(estrellas, numero);
+
+      return contenedor;
+    }
+
+    function mostrarTarjetaPsicologa() {
+      const id = selPsicologa.value;
+
+      const psicologa = listaPsicologas.find(
+        p => String(p.id_psicologa) === String(id)
+      );
+
+      tarjetaPsicologa.replaceChildren();
+
+      if (!psicologa) {
+        return;
+      }
+
+      const nombre = psicologa.nombre_completo || "Psicóloga";
+      const rutaFoto = obtenerRutaFoto(psicologa.foto);
+
+      const tarjeta = document.createElement("div");
+      tarjeta.className = "psicologa-card";
+
+      const contenedorFoto = document.createElement("div");
+      contenedorFoto.className = "psicologa-foto-contenedor";
+
+      const informacion = document.createElement("div");
+      informacion.className = "psicologa-info";
+
+      const nombreElemento = crearTexto(
+        "p",
+        nombre,
+        "psicologa-nombre"
+      );
+
+      const especialidad = crearTexto(
+        "p",
+        psicologa.especialidad || "Psicología general",
+        "psicologa-especialidad"
+      );
+
+      const calificacion = document.createElement("p");
+      calificacion.appendChild(
+        crearEstrellas(psicologa.calificacion)
+      );
+
+      informacion.append(
+        nombreElemento,
+        especialidad,
+        calificacion
+      );
+
+      tarjeta.append(contenedorFoto, informacion);
+      tarjetaPsicologa.appendChild(tarjeta);
+
+      if (!rutaFoto) {
+        mostrarInicial(contenedorFoto, nombre);
+        return;
+      }
+
+      const imagen = document.createElement("img");
+
+      imagen.className = "psicologa-foto";
+      imagen.alt = "Fotografía de " + nombre;
+      imagen.loading = "lazy";
+
+      imagen.onerror = function() {
+        imagen.onerror = null;
+        mostrarInicial(contenedorFoto, nombre);
+      };
+
+      imagen.src = rutaFoto;
+      contenedorFoto.appendChild(imagen);
+    }
+
+    /* =========================================
+       CARGAR PSICÓLOGAS DESDE PHP
+    ========================================= */
+
+    async function cargarPsicologas() {
+      selPsicologa.disabled = true;
+      tarjetaPsicologa.replaceChildren();
+      selPsicologa.replaceChildren();
+
+      selPsicologa.appendChild(
+        new Option("Cargando psicólogas...", "")
+      );
+
+      try {
+        const data = await consultarJSON(API.psicologas);
+
+        if (!data.ok || !Array.isArray(data.psicologas)) {
+          throw new Error(
+            data.mensaje || "No se recibieron las psicólogas."
+          );
+        }
+
+        listaPsicologas = data.psicologas;
+
+        selPsicologa.replaceChildren();
+
+        selPsicologa.appendChild(
+          new Option("Selecciona una psicóloga", "")
+        );
+
+        listaPsicologas.forEach(function(p) {
+          if (p.id_psicologa == null) {
+            return;
+          }
+
+          const nombre = p.nombre_completo || "Psicóloga";
+
+          const opcion = new Option(
+            nombre + (
+              p.especialidad
+                ? " — " + p.especialidad
+                : ""
+            ),
+            String(p.id_psicologa)
+          );
+
+          selPsicologa.appendChild(opcion);
+        });
+
+        if (selPsicologa.options.length <= 1) {
+          tarjetaPsicologa.appendChild(
+            crearTexto(
+              "p",
+              "No hay psicólogas registradas.",
+              "text-muted text-sm"
+            )
+          );
+        }
+
+      } catch (error) {
+        console.error("Error al cargar psicólogas:", error);
+
+        listaPsicologas = [];
+        selPsicologa.replaceChildren();
+
+        selPsicologa.appendChild(
+          new Option("No se pudieron cargar las psicólogas", "")
+        );
+
+        tarjetaPsicologa.appendChild(
+          crearTexto(
+            "p",
+            error.message ||
+              "Revisa lista-psicologas.php y la conexión con la base de datos.",
+            "text-muted text-sm"
+          )
+        );
+
+      } finally {
+        selPsicologa.disabled = false;
+      }
+    }
+
+    /* =========================================
+       SELECCIÓN DE HORARIOS
+    ========================================= */
+
+    function restablecerSeleccionHora() {
+      delete botonAgendar.dataset.hora;
+      botonAgendar.disabled = true;
+    }
+
+    async function cargarHorarios() {
+      const idPsicologa = selPsicologa.value;
+      const fecha = selFecha.value;
+
+      const numeroSolicitud = ++solicitudHorarios;
+
+      restablecerSeleccionHora();
+      listaHorarios.replaceChildren();
+
+      if (!idPsicologa || !fecha) {
+        listaHorarios.appendChild(
+          crearTexto(
+            "p",
+            "Elige psicóloga y fecha para ver horarios.",
+            "text-muted text-sm"
+          )
+        );
+        return;
+      }
+
+      if (fecha < fechaLocalISO()) {
+        listaHorarios.appendChild(
+          crearTexto(
+            "p",
+            "Selecciona una fecha válida.",
+            "text-muted text-sm"
+          )
+        );
+        return;
+      }
+
+      listaHorarios.appendChild(
+        crearTexto(
+          "p",
+          "Buscando horarios...",
+          "text-muted text-sm"
+        )
+      );
+
+      try {
+        const url = API.horarios +
+          "?id_psicologa=" + encodeURIComponent(idPsicologa) +
+          "&fecha=" + encodeURIComponent(fecha);
+
+        const data = await consultarJSON(url);
+
+        // Ignorar respuestas de consultas anteriores.
+        if (numeroSolicitud !== solicitudHorarios) {
+          return;
+        }
+
+        listaHorarios.replaceChildren();
+
+        if (!data.ok || !Array.isArray(data.horarios)) {
+          throw new Error(
+            data.mensaje || "No se pudo obtener la lista de horarios."
+          );
+        }
+
+        if (data.horarios.length === 0) {
+          listaHorarios.appendChild(
+            crearTexto(
+              "p",
+              "No hay horarios disponibles ese día.",
+              "text-muted text-sm"
+            )
+          );
+          return;
+        }
+
+        data.horarios.forEach(function(horario) {
+          const hora = String(horario).trim();
+
+          if (!hora) {
+            return;
+          }
+
+          const boton = document.createElement("button");
+
+          boton.type = "button";
+          boton.className = "btn btn-outline";
+          boton.style.padding = ".5rem .9rem";
+          boton.textContent = hora;
+          boton.setAttribute("aria-pressed", "false");
+
+          boton.addEventListener("click", function() {
+            listaHorarios.querySelectorAll("button").forEach(
+              function(b) {
+                b.classList.remove("btn-primary");
+                b.classList.add("btn-outline");
+                b.setAttribute("aria-pressed", "false");
+              }
+            );
+
+            boton.classList.remove("btn-outline");
+            boton.classList.add("btn-primary");
+            boton.setAttribute("aria-pressed", "true");
+
+            botonAgendar.dataset.hora = hora;
+            botonAgendar.disabled = false;
+
+            ocultarMensaje();
+          });
+
+          listaHorarios.appendChild(boton);
+        });
+
+        if (!listaHorarios.querySelector("button")) {
+          listaHorarios.appendChild(
+            crearTexto(
+              "p",
+              "No hay horarios disponibles ese día.",
+              "text-muted text-sm"
+            )
+          );
+        }
+
+      } catch (error) {
+        if (numeroSolicitud !== solicitudHorarios) {
+          return;
+        }
+
+        console.error("Error al cargar horarios:", error);
+
+        listaHorarios.replaceChildren();
+
+        listaHorarios.appendChild(
+          crearTexto(
+            "p",
+            error.message ||
+              "No se pudieron cargar los horarios. Intenta nuevamente.",
+            "text-muted text-sm"
+          )
+        );
+      }
+    }
+
+    /* =========================================
+       AGENDAR UNA CITA
+    ========================================= */
+
+    async function agendarCita() {
+      if (enviandoCita) {
+        return;
+      }
+
+      const idPsicologa = selPsicologa.value;
+      const fecha = selFecha.value;
+      const hora = botonAgendar.dataset.hora;
+      const notas = campoNotas.value.trim();
+
+      if (!idPsicologa || !fecha || !hora) {
+        mostrarMensaje(
+          "Selecciona una psicóloga, una fecha y una hora.",
+          "warning"
+        );
+        return;
+      }
+
+      if (fecha < fechaLocalISO()) {
+        mostrarMensaje(
+          "No puedes solicitar una cita en una fecha pasada.",
+          "warning"
+        );
+        return;
+      }
+
+      enviandoCita = true;
+      botonAgendar.disabled = true;
+      botonAgendar.textContent = "Agendando...";
+
+      const datos = new FormData();
+
+      datos.append("id_psicologa", idPsicologa);
+      datos.append("fecha", fecha);
+      datos.append("hora", hora);
+      datos.append("notas", notas);
+
+      try {
+        const data = await consultarJSON(API.agendar, {
+          method: "POST",
+          body: datos
+        });
+
+        mostrarMensaje(
+          data.mensaje || (
+            data.ok
+              ? "La solicitud fue procesada."
+              : "No se pudo agendar la cita."
+          ),
+          data.ok ? "info" : "warning"
+        );
+
+        if (data.ok) {
+          campoNotas.value = "";
+
+          // Quitar la selección de hora anterior.
+          restablecerSeleccionHora();
+
+          // Actualizar horarios y citas.
+          await Promise.all([
+            cargarHorarios(),
+            cargarCitas()
+          ]);
+        }
+
+      } catch (error) {
+        console.error("Error al agendar cita:", error);
+
+        mostrarMensaje(
+          error.message ||
+            "No se pudo conectar con el servidor. Verifica agendar-cita.php.",
+          "warning"
+        );
+
+      } finally {
+        enviandoCita = false;
+        botonAgendar.textContent = "Solicitar cita";
+
+        botonAgendar.disabled = !botonAgendar.dataset.hora;
+      }
+    }
+
+    /* =========================================
+       MOSTRAR MIS CITAS
+    ========================================= */
+
+    async function cargarCitas() {
+      listaCitas.replaceChildren();
+
+      listaCitas.appendChild(
+        crearTexto(
+          "p",
+          "Cargando tus citas...",
+          "text-muted text-sm"
+        )
+      );
+
+      try {
+        const data = await consultarJSON(API.citas);
+
+        listaCitas.replaceChildren();
+
+        if (!data.ok || !Array.isArray(data.citas)) {
+          throw new Error(
+            data.mensaje || "No se pudo obtener la lista de citas."
+          );
+        }
+
+        if (data.citas.length === 0) {
+          listaCitas.appendChild(
+            crearTexto(
+              "p",
+              "Todavía no tienes citas agendadas.",
+              "text-muted text-sm"
+            )
+          );
+          return;
+        }
+
+        data.citas.forEach(function(cita) {
+          const tarjeta = document.createElement("article");
+          tarjeta.className = "cita-item";
+
+          const informacion = document.createElement("div");
+
+          const nombre = crearTexto(
+            "p",
+            cita.psicologa || "Psicóloga"
+          );
+
+          nombre.style.fontWeight = "600";
+
+          const hora = cita.hora
+            ? String(cita.hora).substring(0, 5)
+            : "Hora no disponible";
+
+          const fechaHora = crearTexto(
+            "p",
+            (cita.fecha || "Fecha no disponible") +
+              " — " + hora,
+            "text-muted text-sm"
+          );
+
+          informacion.append(nombre, fechaHora);
+
+          tarjeta.append(
+            informacion,
+            crearBadge(cita.estado)
+          );
+
+          listaCitas.appendChild(tarjeta);
+        });
+
+      } catch (error) {
+        console.error("Error al cargar citas:", error);
+
+        listaCitas.replaceChildren();
+
+        listaCitas.appendChild(
+          crearTexto(
+            "p",
+            error.message ||
+              "No se pudieron cargar tus citas. Comprueba mis-citas.php y tu sesión.",
+            "text-muted text-sm"
+          )
+        );
+      }
+    }
+
+    /* =========================================
+       INICIALIZACIÓN DE LA PÁGINA
+    ========================================= */
+
+    // No permitir fechas anteriores al día actual.
+    selFecha.min = fechaLocalISO();
+
+    // Cuando se cambia la psicóloga.
+    selPsicologa.addEventListener("change", function() {
+      mostrarTarjetaPsicologa();
+      ocultarMensaje();
+      cargarHorarios();
+    });
+
+    // Cuando se cambia la fecha.
+    selFecha.addEventListener("change", function() {
+      ocultarMensaje();
+      cargarHorarios();
+    });
+
+    // Evento del botón de agendar.
+    botonAgendar.addEventListener("click", agendarCita);
+
+    // Cargar los datos iniciales.
+    async function iniciarPagina() {
+      await cargarPsicologas();
+
+      await Promise.all([
+        cargarHorarios(),
+        cargarCitas()
+      ]);
+    }
+
+    iniciarPagina();
+  </script>
+
+</body>
+</html>

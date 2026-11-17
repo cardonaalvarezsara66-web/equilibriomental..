@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagar Compra - INFIEL</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pagina-pago">
+    <header class="navbar" id="navbar">
+    <div class="inner container">
+      <a href="inicio.html" class="logo">
+        <img src="../img/logo.png" alt="Logo de Equilibrio Mental">
+        <span>Equilibrio mental</span>
+      </a>
+
+      <nav class="center-nav">
+        <a href="inicio.html">Inicio</a>
+        <a href="vinculacion.html">Vinculación</a>
+        <a href="agendar-cita.html" class="active">Agendar cita</a>
+        <a href="tienda.html">Tienda</a>
+      </nav>
+
+      <div class="oval-icons">
+        <a href="perfil.html" title="Perfil" aria-label="Perfil">
+          <i class="fa-solid fa-user"></i>
+        </a>
+
+        <a
+          href="#"
+          onclick="logout(); return false;"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
+>
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </a>
+
+
+        <a href="ia.html" title="IA" aria-label="Inteligencia artificial">
+          <i class="fa-solid fa-robot"></i>
+        </a>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav">
+      <a href="inicio.html">Inicio</a>
+      <a href="vinculacion.html">Vinculación</a>
+      <a href="agendar-cita.html">Agendar cita</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="carrito.html">Carrito</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="ia.html">IA</a>
+    </nav>
+  </header>
+  
+  <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+  <div class="cart-drawer" id="cart-drawer"><div class="header"><h3>🛍️ Mi Carrito (<span id="cart-count">0</span>)</h3><button onclick="toggleCart()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;">✕</button></div><div class="body" id="cart-items"></div><div class="footer-section" id="cart-footer" style="display:none;"><div style="display:flex;justify-content:space-between;margin-bottom:.75rem;"><span class="text-muted">Total</span><span class="font-bold"><span id="cart-total">$0</span> <span id="cart-currency">COP</span></span></div><a href="pagar-compra.html" class="btn btn-primary btn-block" style="margin-bottom:.5rem;">Proceder al pago</a><a href="tienda.html" class="btn btn-outline btn-block">Seguir comprando</a></div></div>
+
+  <div style="min-height:100vh;padding-top:6rem;">
+    <section class="section">
+      <div class="container">
+        <button class="back-link" id="back-btn" onclick="checkoutBack()">← Volver a la tienda</button>
+
+        <!-- Empty state -->
+        <div id="empty-cart-msg" style="display:none;text-align:center;padding:4rem 1rem;">
+          <div class="glass-card" style="max-width:400px;margin:0 auto;padding:3rem 2rem;">
+            <div style="font-size:3rem;margin-bottom:1rem;">📦</div>
+            <h2 style="font-size:1.5rem;margin-bottom:.5rem;">Carrito vacío</h2>
+            <p class="text-muted mb-3">Agrega productos antes de proceder al pago.</p>
+            <a href="tienda.html" class="btn btn-primary">Ir a la tienda</a>
+          </div>
+        </div>
+
+        <div id="checkout-content" style="display:none;">
+          <!-- Progress -->
+          <div class="progress-bar" id="progress-bar"></div>
+
+          <div style="display:grid;gap:2rem;" class="grid-2" id="checkout-grid" style="display:none;">
+            <div id="checkout-form"></div>
+            <div>
+              <div class="glass-card">
+                <h3 style="font-size:1.1rem;margin-bottom:1rem;">Resumen del pedido</h3>
+                <div id="summary-items"></div>
+                <div id="summary-totals" style="border-top:1px solid var(--border);padding-top:.75rem;margin-top:.75rem;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+    <footer class="footer">
+  <div
+    class="container footer-layout"
+    style="width:100%; max-width:none; display:grid; grid-template-columns:110px minmax(0, 1fr) 110px; align-items:center; gap:1rem;"
+  >
+    <img
+      class="footer-logo"
+      src="../img/logo_lola.png"
+      alt="Logo de Lola González"
+      style="width: 90px; height:90px; object-fit:contain; justify-self:center;"
+    >
+
+    <div class="footer-contenido" style="min-width:0;">
+      <div class="grid">
+        <section>
+          <h3>¿Necesitas ayuda?</h3>
+          <p>Estamos aquí para escucharte. No estás sola.</p>
+        </section>
+
+        <section style="display:flex; flex-direction:column; gap:.5rem;">
+          <a href="mailto:descubretuinfiel@tusitio.com">
+            descubretuinfiel@tusitio.com
+          </a>
+          <a href="tel:+573001234567">+57 300 123 4567</a>
+          <span>WhatsApp disponible 24/7</span>
+        </section>
+
+        <section>
+          <h4 style="font-size:1rem; margin-bottom:.35rem;">
+            Términos de uso
+          </h4>
+          <p style="font-size:.8rem; line-height:1.5;">
+            Este sitio ofrece información orientativa. No sustituye asesoría
+            profesional. Al usar este sitio aceptas nuestras condiciones generales.
+          </p>
+        </section>
+      </div>
+
+      <div class="bottom">
+        Hecho con amor para tu bienestar
+      </div>
+    </div>
+
+    <img
+      class="footer-logo"
+      src="../img/logo_pascual.png"
+      alt="Logo de la Institución Universitaria Pascual Bravo"
+      style="width: 120px; height: 120px; object-fit:contain; justify-self:center;"
+    >
+  </div>
+</footer>
+
+  <script src="../js/script.js"></script>
+  <script>
+    var step = 1, envio = "estandar", metodoPago = "tarjeta";
+    var formData = { nombre:"",apellido:"",email:"",telefono:"",direccion:"",ciudad:"",estado:"",codigoPostal:"",pais:"",tarjeta:"",expiracion:"",cvv:"",nombreTarjeta:"",nequiTelefono:"",pseBanco:"" };
+
+    function initCheckout() {
+      var cart = getCart();
+      if (cart.length === 0) {
+        document.getElementById("empty-cart-msg").style.display = "block";
+        return;
+      }
+      document.getElementById("checkout-content").style.display = "block";
+      renderStep();
+      renderSummary();
+    }
+
+    function renderProgress() {
+      var labels = ["Datos","Dirección","Envío","Pago"];
+      var html = "";
+      labels.forEach(function(l, i) {
+        html += '<div class="step-circle ' + (i + 1 <= step ? "active" : "inactive") + '">' + (i + 1) + '</div>';
+        if (i < 3) html += '<div class="step-line ' + (i + 1 < step ? "active" : "inactive") + '"></div>';
+      });
+      document.getElementById("progress-bar").innerHTML = html;
+    }
+
+    function renderSummary() {
+      var cart = getCart();
+      var items = "", subtotal = 0, totalQty = 0;
+      cart.forEach(function(it) {
+        subtotal += it.price * it.qty; totalQty += it.qty;
+        items += '<div style="display:flex;gap:.75rem;margin-bottom:.75rem;"><img src="' + it.image + '" style="width:56px;height:56px;object-fit:cover;border-radius:.5rem;"><div style="flex:1;"><p style="font-size:.85rem;font-weight:500;">' + it.name + '</p><p class="text-muted" style="font-size:.75rem;">Cant: ' + it.qty + '</p></div><span style="font-size:.85rem;font-weight:700;">' + formatCOP(it.price * it.qty) + '</span></div>';
+      });
+      document.getElementById("summary-items").innerHTML = items;
+      var ship = envio === "express" ? 15000 : envio === "estandar" ? 8000 : 0;
+      var gt = subtotal + ship;
+      document.getElementById("summary-totals").innerHTML = '<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.25rem;"><span class="text-muted">Subtotal (' + totalQty + ')</span><span>' + formatCOP(subtotal) + '</span></div><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.5rem;"><span class="text-muted">Envío</span><span>' + (ship === 0 ? "Gratis" : formatCOP(ship)) + '</span></div><div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;border-top:1px solid var(--border);padding-top:.5rem;"><span>Total</span><span style="color:var(--primary);">' + formatCOP(gt) + ' COP</span></div>';
+    }
+
+    function renderStep() {
+      renderProgress();
+      var form = document.getElementById("checkout-form");
+      if (step === 1) {
+        form.innerHTML = '<div class="glass-card"><h2 style="font-size:1.4rem;margin-bottom:1.5rem;">📍 Datos personales</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;"><div><label class="label">Nombre *</label><input class="input-field" id="f-nombre" placeholder="Juan" value="' + formData.nombre + '"></div><div><label class="label">Apellido *</label><input class="input-field" id="f-apellido" placeholder="Pérez" value="' + formData.apellido + '"></div><div><label class="label">Email *</label><input class="input-field" id="f-email" type="email" placeholder="juan@email.com" value="' + formData.email + '"></div><div><label class="label">Teléfono *</label><input class="input-field" id="f-telefono" type="tel" placeholder="+52 123 456 7890" value="' + formData.telefono + '"></div></div></div>';
+      } else if (step === 2) {
+        form.innerHTML = '<div class="glass-card"><h2 style="font-size:1.4rem;margin-bottom:1.5rem;">📍 Dirección de envío</h2><div style="display:flex;flex-direction:column;gap:1rem;"><div><label class="label">Dirección *</label><input class="input-field" id="f-direccion" placeholder="Calle, número, colonia" value="' + formData.direccion + '"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;"><div><label class="label">Ciudad *</label><input class="input-field" id="f-ciudad" placeholder="Ciudad" value="' + formData.ciudad + '"></div><div><label class="label">Estado *</label><input class="input-field" id="f-estado" placeholder="Estado" value="' + formData.estado + '"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;"><div><label class="label">Código Postal *</label><input class="input-field" id="f-codigoPostal" placeholder="01234" value="' + formData.codigoPostal + '"></div><div><label class="label">País *</label><input class="input-field" id="f-pais" placeholder="México" value="' + formData.pais + '"></div></div></div></div>';
+      } else if (step === 3) {
+        form.innerHTML = '<div class="glass-card"><h2 style="font-size:1.4rem;margin-bottom:1.5rem;">🚚 Método de envío</h2><div style="display:flex;flex-direction:column;gap:.75rem;"><label class="shipping-option ' + (envio === "estandar" ? "active" : "") + '"><input type="radio" name="envio" value="estandar" ' + (envio === "estandar" ? "checked" : "") + ' onchange="envio=\'estandar\';renderStep();renderSummary();"><div style="flex:1;"><p style="font-weight:600;">Estándar (5-7 días)</p><p class="text-muted text-sm">Envío regular con seguimiento</p></div><span style="font-weight:700;color:var(--primary);">$8.000 COP</span></label><label class="shipping-option ' + (envio === "express" ? "active" : "") + '"><input type="radio" name="envio" value="express" ' + (envio === "express" ? "checked" : "") + ' onchange="envio=\'express\';renderStep();renderSummary();"><div style="flex:1;"><p style="font-weight:600;">Express (2-3 días)</p><p class="text-muted text-sm">Envío rápido prioritario</p></div><span style="font-weight:700;color:var(--primary);">$15.000 COP</span></label><label class="shipping-option ' + (envio === "gratis" ? "active" : "") + '"><input type="radio" name="envio" value="gratis" ' + (envio === "gratis" ? "checked" : "") + ' onchange="envio=\'gratis\';renderStep();renderSummary();"><div style="flex:1;"><p style="font-weight:600;">Recoger en tienda (Gratis)</p><p class="text-muted text-sm">Recoge en nuestra sucursal</p></div><span style="font-weight:700;color:var(--primary);">Gratis</span></label></div></div>';
+      } else if (step === 4) {
+        form.innerHTML = '<div class="glass-card"><h2 style="font-size:1.4rem;margin-bottom:1rem;">💳 Preferencia de pago</h2><p class="text-muted mb-2">Selecciona cómo prefieres pagar. Esta versión registra el pedido, pero todavía no procesa cobros.</p><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;"><button type="button" class="payment-method ' + (metodoPago === "tarjeta" ? "active" : "") + '" onclick="metodoPago=\'tarjeta\';renderStep();"><span class="pm-icon">💳</span><span class="pm-label">Tarjeta</span></button><button type="button" class="payment-method ' + (metodoPago === "nequi" ? "active" : "") + '" onclick="metodoPago=\'nequi\';renderStep();"><span class="pm-icon">📱</span><span class="pm-label">Nequi</span></button><button type="button" class="payment-method ' + (metodoPago === "qr" ? "active" : "") + '" onclick="metodoPago=\'qr\';renderStep();"><span class="pm-icon">📷</span><span class="pm-label">Código QR</span></button><button type="button" class="payment-method ' + (metodoPago === "pse" ? "active" : "") + '" onclick="metodoPago=\'pse\';renderStep();"><span class="pm-icon">🏦</span><span class="pm-label">PSE</span></button></div><div class="alert-box info mt-2">No ingreses datos reales de tarjeta. El pedido quedará pendiente y podrás seguir su estado desde la tienda.</div></div>';
+      }
+      form.innerHTML += '<button class="btn btn-primary btn-block btn-lg mt-2" onclick="nextStep()">' + (step < 4 ? "Continuar" : "Registrar pedido") + '</button>';
+    }
+
+    function saveFields() {
+      var fields = ["nombre","apellido","email","telefono","direccion","ciudad","estado","codigoPostal","pais","tarjeta","expiracion","cvv","nombreTarjeta","nequiTelefono","pseBanco"];
+      fields.forEach(function(f) { var el = document.getElementById("f-" + f); if (el) formData[f] = el.value; });
+    }
+
+    async function nextStep() {
+      saveFields();
+      var req = step === 1 ? ["nombre","apellido","email","telefono"] : step === 2 ? ["direccion","ciudad","estado","codigoPostal","pais"] : [];
+      for (var i = 0; i < req.length; i++) { if (!formData[req[i]].trim()) { alert("Completa todos los campos requeridos."); return; } }
+      if (step < 4) { step++; renderStep(); renderSummary(); }
+      else {
+        var cart = getCart();
+        if (!cart.length) { alert("El carrito está vacío."); return; }
+        var button = document.querySelector("#checkout-form > .btn");
+        if (button) { button.disabled = true; button.textContent = "Registrando pedido…"; }
+        try {
+          var respuesta = await fetch("../php/guardar-pedido.php", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({
+              cliente: {
+                nombre: formData.nombre, apellido: formData.apellido, email: formData.email,
+                telefono: formData.telefono, direccion: formData.direccion, ciudad: formData.ciudad,
+                estado: formData.estado, codigoPostal: formData.codigoPostal, pais: formData.pais
+              },
+              items: cart, envio: envio, metodo_pago: metodoPago
+            })
+          });
+          var resultado = await respuesta.json();
+          if (!respuesta.ok || !resultado.ok) throw new Error(resultado.mensaje || "No se pudo registrar el pedido.");
+          saveCart([]);
+          alert("Pedido #" + resultado.id_pedido + " registrado. Estado: pendiente. No se realizó ningún cobro.");
+          window.location.href = "tienda.html#mis-pedidos";
+        } catch (error) {
+          alert(error.message);
+          if (button) { button.disabled = false; button.textContent = "Registrar pedido"; }
+        }
+      }
+    }
+
+    function checkoutBack() {
+      if (step > 1) { saveFields(); step--; renderStep(); renderSummary(); }
+      else window.location.href = "tienda.html";
+    }
+
+    initCheckout();
+  </script>
+</body>
+</html>

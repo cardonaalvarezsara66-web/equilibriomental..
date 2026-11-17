@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda - INFIEL</title>
+  <meta name="description" content="Tienda de dispositivos inteligentes para monitoreo">
+  <link rel="stylesheet" href="../css/estilos.css?v=tienda-layout2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pagina-tienda">
+    <!-- Importa Font Awesome en tu <head> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+ <header class="navbar" id="navbar">
+  <div class="inner container">
+    <!-- Logo -->
+    <a href="inicio.html" class="logo">
+      <img src="../img/logo.png" alt="Logo">
+      <span>Equilibrio mental</span>
+    </a>
+
+    <!-- Menú centrado -->
+    <nav class="center-nav">
+      <a href="inicio.html" class="active">Inicio</a>
+      <a href="vinculacion.html">Vinculación</a>
+      <a href="agendar-cita.html">Agendar cita</a>
+      <a href="tienda.html">Tienda</a>
+    </nav>
+
+    <!-- Óvalo con íconos a la derecha -->
+    <div class="oval-icons">
+      <a href="perfil.html" title="Perfil"><i class="fa-solid fa-user"></i></a>
+      <a href="logout.html" title="Cerrar sesión"><i class="fa-solid fa-right-from-bracket"></i></a>
+      <a href="ia.html" title="IA"><i class="fa-solid fa-robot"></i></a>
+    </div>
+  </div>
+
+  <!-- Menú móvil -->
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="inicio.html">Inicio</a>
+    <a href="vinculacion.html">Vinculación</a>
+    <a href="agendar-cita.html">Agendar cita</a>
+    <a href="tienda.html">Tienda</a>
+    <a href="carrito.html">Carrito</a>
+    <a href="perfil.html">Perfil</a>
+    <a href="asesoria.html">IA</a>
+  </div>
+</header> 
+  <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+  <div class="cart-drawer" id="cart-drawer"><div class="header"><h3>🛍️ Mi Carrito (<span id="cart-count">0</span>)</h3><button onclick="toggleCart()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;">✕</button></div><div class="body" id="cart-items"></div><div class="footer-section" id="cart-footer" style="display:none;"><div style="display:flex;justify-content:space-between;margin-bottom:.75rem;"><span class="text-muted">Total</span><span class="font-bold"><span id="cart-total">$0</span> <span id="cart-currency">COP</span></span></div><a href="pagar-compra.html" class="btn btn-primary btn-block" style="margin-bottom:.5rem;">Proceder al pago</a><a href="tienda.html" class="btn btn-outline btn-block">Seguir comprando</a></div></div>
+
+  <div style="min-height:100vh;padding-top:6rem;">
+    <section class="section">
+      <div class="container">
+        <h1 class="section-title anim-up" style="font-size:2.5rem;"><span class="text-gradient">Tienda</span> de Dispositivos</h1>
+        <p class="text-muted anim-up-d1 mb-3" style="max-width:720px;">Adquiere los dispositivos inteligentes que te ayudarán a monitorear en tiempo real.</p>
+        <section class="glass-card tienda-seguimiento" id="mis-pedidos">
+          <div class="tracking-title"><div><p class="eyebrow">TUS COMPRAS</p><h2>Rastrea tu pedido</h2><p class="text-muted">Consulta aquí si está recibido, en camino o entregado.</p></div><button class="btn btn-outline" type="button" onclick="cargarSeguimientoPedidos()">Actualizar</button></div>
+          <div id="lista-seguimiento" aria-live="polite">Cargando tus pedidos…</div>
+        </section>
+        <div class="grid-3" id="products-grid"></div>
+      </div>
+    </section>
+  </div>
+      <footer class="footer">
+  <div class="container footer-layout">
+
+    <img
+      class="footer-logo"
+      src="../img/logo_lola.png"
+      alt="Logo de Lola González"
+    >
+
+    <div class="footer-contenido">
+      <div class="footer-grid">
+        <section>
+          <h3>¿Necesitas ayuda?</h3>
+          <p>Estamos aquí para escucharte. No estás sola.</p>
+        </section>
+
+        <section class="footer-contacto">
+          <a href="mailto:descubretuinfiel@tusitio.com">
+            descubretuinfiel@tusitio.com
+          </a>
+          <a href="tel:+573001234567">+57 300 123 4567</a>
+          <span>WhatsApp disponible 24/7</span>
+        </section>
+
+        <section>
+          <h4>Términos de uso</h4>
+          <p>
+            Este sitio ofrece información orientativa. No sustituye asesoría
+            profesional. Al usar este sitio aceptas nuestras condiciones generales.
+          </p>
+        </section>
+      </div>
+
+      <div class="footer-bottom">Hecho con amor para tu bienestar</div>
+    </div>
+
+    <img
+      class="footer-logo"
+      src="../img/logo_pascual.png"
+      alt="Logo de la Institución Universitaria Pascual Bravo"
+    >
+
+  </div>
+</footer>
+    
+  <button class="cart-fab" onclick="toggleCart()" title="Ver carrito">🛒<span class="fab-count" id="cart-fab-count" style="display:none;">0</span></button>
+
+  <script src="../js/script.js?v=tienda-cop-20261104"></script>
+  <script>
+var products = [
+  {
+    id: 1,
+    name: "Pulseras con Propósito",
+    desc: "Pulseras con mensajes que inspiran calma, fuerza, confianza y gratitud.",
+    price: 120000,
+    currency: "COP",
+    images: [
+      { src: "../img/manilla-calma.png", label: "Calma" },
+      { src: "../img/manilla-fuerza.png", label: "Fuerza" },
+      { src: "../img/manilla-confianza.png", label: "Confianza" },
+      { src: "../img/manilla-amor-propio.png", label: "Amor propio" },
+      { src: "../img/manilla-gratitud.png", label: "Gratitud" },
+      { src: "../img/manilla-suenos.png", label: "Sueños" }
+    ]
+  },
+  {
+    id: 2,
+    name: "Velas de Calma",
+    desc: "Elige el aroma que acompañará tus momentos de tranquilidad.",
+    price: 90000,
+    currency: "COP",
+    images: [
+      { src: "../img/vela-calma.png", label: "Calma" },
+      { src: "../img/vela-amor-propio.png", label: "Amor propio" },
+      { src: "../img/vela-energia.png", label: "Energía" },
+      { src: "../img/vela-tranquilidad.png", label: "Tranquilidad" },
+      { src: "../img/vela-enfoque.png", label: "Enfoque" },
+      { src: "../img/vela-suenos.png", label: "Sueños" }
+    ]
+  },
+  {
+    id: 3,
+    name: "Smartwatch Bienestar",
+    desc: "Un reloj inteligente que te acompaña en tu rutina diaria.",
+    price: 100000,
+    currency: "COP",
+    images: [
+      { src: "../img/reloj-pantalla-bienestar.png", label: "Pantalla bienestar" },
+      { src: "../img/reloj-respiracion.png", label: "Respiración" },
+      { src: "../img/reloj-hidratacion.png", label: "Hidratación" },
+      { src: "../img/reloj-sensor.png", label: "Sensor" },
+      { src: "../img/relojes-colores.png", label: "Colores disponibles" }
+    ],
+    colors: [
+      { name: "Rosa", hex: "#e9a9b9" },
+      { name: "Verde", hex: "#a8b39a" },
+      { name: "Negro", hex: "#29272a" }
+    ]
+  },
+  {
+    id: 4,
+    name: "Diario de Emociones",
+    desc: "Un espacio personal para expresar tus sentimientos.",
+    price: 90000,
+    currency: "COP",
+    images: [
+      { src: "../img/diario.jpg", label: "Diario" }
+    ]
+  },
+  {
+    id: 5,
+    name: "Kit de Autocuidado",
+    desc: "Todo lo necesario para regalarte un momento especial.",
+    price: 90000,
+    currency: "COP",
+    images: [
+      { src: "../img/kit-auto-cuidado.jpg", label: "Kit completo" },
+      { src: "../img/kit-caja.jpg", label: "Caja" },
+      { src: "../img/kit-diario.jpg", label: "Diario" },
+      { src: "../img/kit-bolsa.jpg", label: "Bolsa" },
+      { src: "../img/kit-vela.jpg", label: "Vela" },
+      { src: "../img/kit-tarjetas.jpg", label: "Tarjetas" },
+      { src: "../img/kit-boligrafo.jpg", label: "Bolígrafo" },
+      { src: "../img/kit-stickers.jpg", label: "Stickers" },
+      { src: "../img/kit-reto-habitos.jpg", label: "Reto de hábitos" }
+    ]
+  }
+];
+var grid = document.getElementById("products-grid");
+var indicesImagenes = {};
+var coloresElegidos = {};
+
+function crearProducto(p) {
+  indicesImagenes[p.id] = 0;
+  coloresElegidos[p.id] = p.colors ? p.colors[1].name : "";
+  var card = document.createElement("article");
+  card.className = "glass-card product-card";
+  card.innerHTML = '<div class="producto-galeria">' +
+    '<div class="producto-carrusel"><button type="button" class="carrusel-flecha" aria-label="Imagen anterior">‹</button><img class="product-img" alt=""><button type="button" class="carrusel-flecha" aria-label="Imagen siguiente">›</button><span class="carrusel-contador"></span></div>' +
+    '<div class="carrusel-miniaturas" aria-label="Selecciona una presentación"></div></div>' +
+    '<h2 class="product-title"></h2><p class="text-muted text-sm product-description"></p>' +
+    (p.colors ? '<div class="product-color-picker"><span class="variant-label">Color: <b class="color-elegido"></b></span><div class="color-swatches"></div></div>' : '') +
+    '<p class="price"></p><div class="product-actions"><button type="button" class="btn btn-primary product-add">🛒 Agregar al carrito</button><button type="button" class="btn btn-outline review-toggle">Reseñas</button></div>' +
+    '<section class="reviews-section" hidden><div class="review-list"></div><form class="review-form"><h3>Deja tu comentario</h3><label>Calificación<select class="input-field review-rating"><option value="5">★★★★★ (5)</option><option value="4">★★★★☆ (4)</option><option value="3">★★★☆☆ (3)</option><option value="2">★★☆☆☆ (2)</option><option value="1">★☆☆☆☆ (1)</option></select></label><label>Tu comentario<textarea class="input-field review-comment" maxlength="1000" required placeholder="Cuéntanos qué te pareció este producto..."></textarea></label><button class="btn btn-primary" type="submit">Publicar comentario</button><p class="review-message text-muted" aria-live="polite"></p></form></section>';
+  card.querySelector(".product-title").textContent = p.name;
+  card.querySelector(".product-description").textContent = p.desc;
+  card.querySelector(".price").textContent = formatCOP(p.price) + " COP";
+  var img = card.querySelector(".product-img");
+  var thumbs = card.querySelector(".carrusel-miniaturas");
+  function seleccionarImagen(index) {
+    indicesImagenes[p.id] = (index + p.images.length) % p.images.length;
+    var foto = p.images[indicesImagenes[p.id]];
+    img.src = foto.src;
+    img.alt = p.name + " — " + foto.label;
+    card.querySelector(".carrusel-contador").textContent = (indicesImagenes[p.id] + 1) + " / " + p.images.length;
+    thumbs.querySelectorAll("button").forEach(function(b, i) { b.classList.toggle("active", i === indicesImagenes[p.id]); });
+  }
+  p.images.forEach(function(foto, index) {
+    var thumb = document.createElement("button");
+    thumb.type = "button";
+    thumb.className = "carrusel-miniatura";
+    thumb.title = foto.label;
+    thumb.setAttribute("aria-label", "Elegir " + foto.label);
+    var ti = document.createElement("img"); ti.src = foto.src; ti.alt = "";
+    var label = document.createElement("span"); label.textContent = foto.label;
+    thumb.append(ti, label); thumb.addEventListener("click", function() { seleccionarImagen(index); }); thumbs.appendChild(thumb);
+  });
+  card.querySelectorAll(".carrusel-flecha")[0].addEventListener("click", function() { seleccionarImagen(indicesImagenes[p.id] - 1); });
+  card.querySelectorAll(".carrusel-flecha")[1].addEventListener("click", function() { seleccionarImagen(indicesImagenes[p.id] + 1); });
+  seleccionarImagen(0);
+  if (p.colors) {
+    var swatches = card.querySelector(".color-swatches");
+    p.colors.forEach(function(color, index) {
+      var swatch = document.createElement("button");
+      swatch.type = "button"; swatch.className = "color-swatch" + (color.name === coloresElegidos[p.id] ? " active" : "");
+      swatch.style.setProperty("--swatch-color", color.hex); swatch.setAttribute("aria-label", color.name); swatch.title = color.name;
+      swatch.addEventListener("click", function() {
+        coloresElegidos[p.id] = color.name;
+        card.querySelector(".color-elegido").textContent = color.name;
+        swatches.querySelectorAll("button").forEach(function(b) { b.classList.remove("active"); }); swatch.classList.add("active");
+      });
+      swatches.appendChild(swatch);
+    });
+    card.querySelector(".color-elegido").textContent = coloresElegidos[p.id];
+  }
+  card.querySelector(".product-add").addEventListener("click", function() {
+    var n = indicesImagenes[p.id] || 0;
+    var variante = p.colors ? "Color " + coloresElegidos[p.id] : p.images[n].label;
+    var cartId = p.id + "-" + n + "-" + (coloresElegidos[p.id] || "std");
+    addToCart(cartId, p.name + " — " + variante, p.price, p.images[n].src, p.currency || "COP");
+  });
+  var reviewSection = card.querySelector(".reviews-section");
+  card.querySelector(".review-toggle").addEventListener("click", function() {
+    reviewSection.hidden = !reviewSection.hidden;
+    if (!reviewSection.hidden) cargarResenas(p.id, card);
+  });
+  card.querySelector(".review-form").addEventListener("submit", function(event) { enviarResena(event, p.id, card); });
+  grid.appendChild(card);
+}
+products.forEach(crearProducto);
+
+async function cargarResenas(productId, card) {
+  var list = card.querySelector(".review-list");
+  list.textContent = "Cargando comentarios…";
+  try {
+    var response = await fetch("../php/resenas-productos.php?id_producto=" + encodeURIComponent(productId), { credentials: "same-origin", cache: "no-store" });
+    var data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.mensaje || "No se pudieron cargar las reseñas.");
+    list.replaceChildren();
+    if (!data.resenas.length) { list.textContent = "Todavía no hay comentarios. ¡Sé la primera persona en opinar!"; return; }
+    data.resenas.forEach(function(review) {
+      var item = document.createElement("article"); item.className = "review-item";
+      var head = document.createElement("div"); head.className = "review-head";
+      var author = document.createElement("strong"); author.textContent = review.autor;
+      var rating = document.createElement("span"); rating.className = "review-stars"; rating.textContent = "★".repeat(Number(review.calificacion)) + "☆".repeat(5 - Number(review.calificacion));
+      var comment = document.createElement("p"); comment.textContent = review.comentario;
+      var date = document.createElement("small"); date.textContent = review.creado_en || "";
+      head.append(author, rating); item.append(head, comment, date); list.appendChild(item);
+    });
+  } catch(error) { list.textContent = error.message; }
+}
+
+async function enviarResena(event, productId, card) {
+  event.preventDefault();
+  var message = card.querySelector(".review-message");
+  var form = event.currentTarget;
+  message.textContent = "Publicando…";
+  try {
+    var response = await fetch("../php/resenas-productos.php", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify({ id_producto: productId, calificacion: Number(card.querySelector(".review-rating").value), comentario: card.querySelector(".review-comment").value.trim() }) });
+    var data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.mensaje || "No se pudo publicar el comentario.");
+    form.reset(); message.textContent = "¡Gracias! Tu comentario quedó publicado."; await cargarResenas(productId, card);
+  } catch(error) { message.textContent = error.message; }
+}
+
+async function cargarSeguimientoPedidos() {
+  var box = document.getElementById("lista-seguimiento");
+  try {
+    var response = await fetch("../php/mis-pedidos.php", { credentials: "same-origin", cache: "no-store", headers: { "Accept": "application/json" } });
+    var data = await response.json();
+    if (response.status === 401) { box.innerHTML = '<p>Inicia sesión para consultar el estado de tus pedidos.</p><a class="btn btn-outline" href="inicio-de-sesion.html">Iniciar sesión</a>'; return; }
+    if (!response.ok || !data.ok) throw new Error(data.mensaje || "No se pudo cargar el rastreo.");
+    box.replaceChildren();
+    if (!data.pedidos.length) { box.textContent = "Aún no tienes pedidos. Cuando compres, podrás seguir aquí su estado."; return; }
+    data.pedidos.forEach(function(order) {
+      var article = document.createElement("article"); article.className = "tracking-card";
+      var head = document.createElement("div"); head.className = "tracking-head";
+      var title = document.createElement("h3"); title.textContent = "Pedido #" + order.id_pedido;
+      var status = document.createElement("span"); status.className = "tracking-status status-" + order.estado; status.textContent = {pendiente:"Recibido", enviado:"En camino", entregado:"Entregado", cancelado:"Cancelado"}[order.estado] || order.estado;
+      head.append(title, status);
+      var meta = document.createElement("p"); meta.textContent = "Fecha: " + order.creado_en + " · Envío: " + (order.metodo_envio || "por definir") + " · Total: " + formatCOP(order.total) + " COP";
+      var steps = document.createElement("ol"); steps.className = "tracking-steps";
+      [{key:"pendiente",label:"Pedido recibido"},{key:"enviado",label:"Enviado"},{key:"entregado",label:"Entregado"}].forEach(function(step, index) { var li=document.createElement("li"); li.textContent=step.label; if(order.estado!=="cancelado" && ["pendiente","enviado","entregado"].indexOf(order.estado)>=index) li.className="done"; steps.appendChild(li); });
+      article.append(head, meta, steps); box.appendChild(article);
+    });
+  } catch(error) { box.textContent = error.message; }
+}
+cargarSeguimientoPedidos();
+
+</script>
+</body>
+</html>
+

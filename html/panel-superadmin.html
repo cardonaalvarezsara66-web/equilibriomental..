@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel del administrador - Equilibrio Mental</title>
+
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+</head>
+
+<body>
+  <header class="navbar" id="navbar">
+    <div class="inner container">
+      <a href="panel-superadmin.html" class="logo">
+        <img src="../img/logo.png" alt="Logo de Equilibrio Mental">
+        <span>Equilibrio mental</span>
+      </a>
+
+      <div class="oval-icons">
+        <a href="perfil.html" title="Perfil" aria-label="Perfil">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+        </a>
+
+        <a
+          href="#"
+          onclick="logout(); return false;"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
+        >
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </a>
+
+        <a href="ia.html" title="IA" aria-label="IA">
+          <i class="fa-solid fa-robot" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="mobile-nav" id="mobile-nav"></div>
+  </header>
+
+  <main style="min-height:100vh;padding-top:6rem;">
+    <section class="section">
+      <div class="container">
+        <h1 class="section-title anim-up" style="font-size:2.5rem;">
+          <span class="text-gradient">Panel</span> del administrador
+        </h1>
+
+        <p class="text-muted anim-up-d1 mb-3">
+          Gestiona roles, compras y citas de toda la plataforma.
+        </p>
+
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+          <button
+            class="btn btn-primary"
+            data-tab="usuarios"
+            onclick="tab('usuarios')"
+          >
+            👥 Usuarios y roles
+          </button>
+
+          <button
+            class="btn btn-outline"
+            data-tab="compras"
+            onclick="tab('compras')"
+          >
+            🛍️ Compras
+          </button>
+
+          <button
+            class="btn btn-outline"
+            data-tab="citas"
+            onclick="tab('citas')"
+          >
+            📅 Citas
+          </button>
+        </div>
+
+        <div
+          id="contenido"
+          style="display:flex;flex-direction:column;gap:1rem;"
+        ></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/script.js"></script>
+
+  <script>
+    var datos = {
+      usuarios: [],
+      compras: [],
+      citas: []
+    };
+
+    var tabActual = "usuarios";
+    var miId = null;
+
+    // Escapa texto para evitar interpretar datos como HTML.
+    function e(t) {
+      return String(t == null ? "" : t).replace(/[&<>"']/g, function(c) {
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[c];
+      });
+    }
+
+    function dinero(n) {
+      return "$" + Number(n).toFixed(2) + " USD";
+    }
+
+    var estados = {
+      pendiente: {
+        t: "⏳ Pendiente",
+        c: "#a06c00",
+        f: "#fff3d6"
+      },
+      confirmada: {
+        t: "✅ Confirmada",
+        c: "#0a6b3d",
+        f: "#d9f5e6"
+      },
+      cancelada: {
+        t: "✖ Cancelada",
+        c: "#8b0a2a",
+        f: "#fbe0e6"
+      },
+      realizada: {
+        t: "☑ Realizada",
+        c: "#333",
+        f: "#eee"
+      },
+      enviado: {
+        t: "🚚 Enviado",
+        c: "#0a4d8b",
+        f: "#dcecfb"
+      },
+      entregado: {
+        t: "📦 Entregado",
+        c: "#0a6b3d",
+        f: "#d9f5e6"
+      },
+      cancelado: {
+        t: "✖ Cancelado",
+        c: "#8b0a2a",
+        f: "#fbe0e6"
+      }
+    };
+
+    function badge(x) {
+      var s = estados[x] || {
+        t: x || "Sin estado",
+        c: "#333",
+        f: "#eee"
+      };
+
+      return '<span style="background:' + s.f +
+        ';color:' + s.c +
+        ';padding:.25rem .6rem;border-radius:999px;' +
+        'font-size:.8rem;font-weight:600;">' +
+        e(s.t) +
+        '</span>';
+    }
+
+    async function api(url, body) {
+      var opts = {
+        credentials: "include",
+        headers: {
+          "Accept": "application/json"
+        }
+      };
+
+      if (body) {
+        opts.method = "POST";
+        opts.body = body;
+      }
+
+      var res = await fetch(url, opts);
+      var texto = await res.text();
+      var resultado;
+
+      try {
+        resultado = JSON.parse(texto);
+      } catch (error) {
+        throw new Error(
+          "El servidor no devolvió JSON válido. " +
+          "Verifica que PHP esté activo y revisa la consola."
+        );
+      }
+
+      if (!res.ok) {
+        throw new Error(
+          resultado.mensaje ||
+          "Error HTTP " + res.status + " al consultar " + url
+        );
+      }
+
+      return resultado;
+    }
+
+    function tab(nombre) {
+      tabActual = nombre;
+
+      document.querySelectorAll("[data-tab]").forEach(function(b) {
+        var activo = b.dataset.tab === nombre;
+        b.classList.toggle("btn-primary", activo);
+        b.classList.toggle("btn-outline", !activo);
+      });
+
+      cargar();
+    }
+
+    async function cargar() {
+      var cont = document.getElementById("contenido");
+
+      cont.innerHTML =
+        '<p class="text-muted">Cargando...</p>';
+
+      var rutas = {
+        usuarios: "admin-usuarios.php",
+        compras: "admin-pedidos.php",
+        citas: "admin-citas.php"
+      };
+
+      var url = rutas[tabActual];
+
+      try {
+        var r = await api("../php/" + url);
+
+        if (!r.ok) {
+          cont.innerHTML =
+            '<p class="text-muted">' +
+            e(r.mensaje || "No autorizado.") +
+            '</p>';
+          return;
+        }
+
+        datos[tabActual] =
+          r.usuarios ||
+          r.pedidos ||
+          r.citas ||
+          [];
+
+        render();
+
+      } catch (error) {
+        console.error("Error cargando el panel:", error);
+
+        cont.innerHTML =
+          '<p class="text-muted">' +
+          'No se pudo cargar ../php/' + e(url) +
+          '. Revisa que el servidor PHP esté activo y que el archivo exista.' +
+          '</p>';
+      }
+    }
+
+    function render() {
+      var cont = document.getElementById("contenido");
+      var lista = datos[tabActual] || [];
+
+      if (!lista.length) {
+        cont.innerHTML =
+          '<p class="text-muted">No hay registros todavía.</p>';
+        return;
+      }
+
+      var funcionesCabeza = {
+        usuarios: cabezaUsuarios,
+        compras: cabezaCompras,
+        citas: cabezaCitas
+      };
+
+      var funcionesFila = {
+        usuarios: filaUsuario,
+        compras: filaCompra,
+        citas: filaCita
+      };
+
+      var head = funcionesCabeza[tabActual]();
+      var body = lista.map(funcionesFila[tabActual]).join("");
+
+      cont.innerHTML =
+        '<div class="admin-table-wrap">' +
+          '<table class="admin-table">' +
+            '<thead><tr>' + head + '</tr></thead>' +
+            '<tbody>' + body + '</tbody>' +
+          '</table>' +
+        '</div>';
+    }
+
+    function cabezaUsuarios() {
+      return "<th>Nombre</th><th>Correo</th><th>Registrado</th><th>Rol</th><th></th>";
+    }
+
+    function cabezaCompras() {
+      return "<th>Pedido</th><th>Cliente</th><th>Productos</th><th>Envío</th><th>Total</th><th>Estado</th>";
+    }
+
+    function cabezaCitas() {
+      return "<th>Usuario</th><th>Correo</th><th>Fecha</th><th>Psicóloga</th><th>Notas</th><th>Estado</th>";
+    }
+
+    function filaUsuario(u) {
+      var esYo = Number(u.id_usuario) === Number(miId);
+
+      var sel =
+        '<select class="input-field" id="rol-' + u.id_usuario +
+        '" style="min-width:170px;" ' +
+        (esYo ? "disabled" : "") +
+        '>' +
+        ["usuario", "administradora", "superadmin"].map(function(r) {
+          var nombres = {
+            usuario: "Usuario",
+            administradora: "Administradora (psicóloga)",
+            superadmin: "Administrador"
+          };
+
+          return '<option value="' + r + '"' +
+            (u.rol === r ? " selected" : "") +
+            '>' + nombres[r] + '</option>';
+        }).join("") +
+        '</select>';
+
+      var btn = esYo
+        ? '<span class="text-muted text-sm">Tu cuenta</span>'
+        : '<button class="btn btn-primary" onclick="guardarRol(' +
+          Number(u.id_usuario) + ')">Guardar</button>';
+
+      return '<tr>' +
+        '<td>' + e(u.nombre) + '</td>' +
+        '<td>' + e(u.correo) + '</td>' +
+        '<td>' + e(String(u.creado_en || "").substring(0, 10)) + '</td>' +
+        '<td>' + sel + '</td>' +
+        '<td>' + btn + '</td>' +
+      '</tr>';
+    }
+
+    async function guardarRol(id) {
+      try {
+        var rol = document.getElementById("rol-" + id).value;
+        var f = new FormData();
+
+        f.append("id_usuario", id);
+        f.append("rol", rol);
+
+        if (rol === "administradora") {
+          var esp = prompt(
+            "Especialidad de la psicóloga (opcional):",
+            ""
+          );
+
+          if (esp === null) return;
+          f.append("especialidad", esp);
+        }
+
+        var r = await api("../php/admin-cambiar-rol.php", f);
+
+        alert((r.ok ? "✅ " : "❌ ") + (r.mensaje || ""));
+
+        if (r.ok) {
+          cargar();
+        }
+      } catch (error) {
+        console.error(error);
+        alert("No se pudo guardar el rol: " + error.message);
+      }
+    }
+
+    function filaCompra(p) {
+      var items = (p.items || []).map(function(i) {
+        return e(i.cantidad) + " × " +
+          e(i.nombre_producto) + " (" +
+          dinero(i.precio) + ")";
+      }).join("<br>");
+
+      var opts = [
+        "pendiente",
+        "enviado",
+        "entregado",
+        "cancelado"
+      ].map(function(s) {
+        return '<option value="' + s + '"' +
+          (p.estado === s ? " selected" : "") +
+          ">" + s + "</option>";
+      }).join("");
+
+      return "<tr>" +
+        '<td><b>#' + e(p.id_pedido) + "</b><br>" +
+          '<span class="text-muted text-sm">' +
+          e(p.creado_en) +
+          "</span></td>" +
+        "<td>" + e(p.usuario) + "<br>" +
+          '<span class="text-muted text-sm">' +
+          e(p.correo_usuario) +
+          "</span></td>" +
+        "<td>" + items + "</td>" +
+        "<td>" + e(p.nombre) + " " + e(p.apellido) + "<br>" +
+          '<span class="text-muted text-sm">' +
+          e(p.direccion) + ", " +
+          e(p.ciudad) + ", " +
+          e(p.departamento) + " " +
+          e(p.codigo_postal) + ", " +
+          e(p.pais) + "<br>☎ " +
+          e(p.telefono) + " · " +
+          e(p.metodo_envio) + " · " +
+          e(p.metodo_pago) +
+          "</span></td>" +
+        '<td class="num">' + dinero(p.total) + "</td>" +
+        "<td>" + badge(p.estado) +
+          '<br><select class="input-field" ' +
+          'style="margin-top:.4rem;min-width:140px;" ' +
+          'onchange="estadoPedido(' + Number(p.id_pedido) +
+          ', this.value)">' +
+          opts +
+          "</select></td>" +
+      "</tr>";
+    }
+
+    async function estadoPedido(id, estado) {
+      try {
+        var f = new FormData();
+        f.append("id_pedido", id);
+        f.append("estado", estado);
+
+        var r = await api("../php/admin-estado-pedido.php", f);
+
+        if (!r.ok) {
+          alert("❌ " + (r.mensaje || "No se pudo cambiar el estado."));
+          return;
+        }
+
+        cargar();
+      } catch (error) {
+        console.error(error);
+        alert("No se pudo actualizar el pedido: " + error.message);
+      }
+    }
+
+    function filaCita(c) {
+      return "<tr>" +
+        "<td>" + e(c.usuario) + "</td>" +
+        "<td>" + e(c.correo_usuario) + "</td>" +
+        "<td>" + e(c.fecha) + "<br>" +
+          '<span class="text-muted text-sm">' +
+          e(String(c.hora || "").substring(0, 5)) +
+          "</span></td>" +
+        "<td>" + e(c.psicologa) + "</td>" +
+        "<td>" + (
+          c.notas
+            ? e(c.notas)
+            : '<span class="text-muted">—</span>'
+        ) + "</td>" +
+        "<td>" + badge(c.estado) + "</td>" +
+      "</tr>";
+    }
+
+    async function verificarAcceso() {
+      try {
+        var u = typeof getUser === "function" ? getUser() : null;
+
+        if (!u || u.rol !== "superadmin") {
+          window.location.href = "inicio-de-sesion.html";
+          return;
+        }
+
+        miId = u.id || u.id_usuario || null;
+
+        if (!miId) {
+          var s = await api("../php/sesion.php");
+
+          if (s.ok && s.usuario) {
+            miId = s.usuario.id || s.usuario.id_usuario || null;
+          }
+        }
+
+        await cargar();
+
+      } catch (error) {
+        console.error("Error verificando acceso:", error);
+
+        var cont = document.getElementById("contenido");
+        cont.innerHTML =
+          '<p class="text-muted">' +
+          'No se pudo verificar la sesión. Revisa que el servidor PHP esté activo.' +
+          '</p>';
+      }
+    }
+
+    verificarAcceso();
+  </script>
+</body>
+</html>

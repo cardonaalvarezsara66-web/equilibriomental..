@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceder - INFIEL</title>
+
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+</head>
+
+<body class="login-page">
+  <header class="navbar" id="navbar">
+    <div class="inner container">
+      <a href="inicio.html" class="logo">
+        <img src="../img/logo.png" alt="Logo de Equilibrio Mental">
+        <span>Equilibrio mental</span>
+      </a>
+
+      <nav class="center-nav">
+        <a href="inicio.html">Inicio</a>
+        <a href="vinculacion.html">Vinculación</a>
+        <a href="agendar-cita.html" class="active">Agendar cita</a>
+        <a href="tienda.html">Tienda</a>
+      </nav>
+
+      <div class="oval-icons">
+        <a href="perfil.html" title="Perfil" aria-label="Perfil">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+        </a>
+
+        <a
+          href="#"
+          onclick="logout(); return false;"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
+        >
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </a>
+
+        <a href="ia.html" title="IA" aria-label="Inteligencia artificial">
+          <i class="fa-solid fa-robot" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav">
+      <a href="inicio.html">Inicio</a>
+      <a href="vinculacion.html">Vinculación</a>
+      <a href="agendar-cita.html">Agendar cita</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="carrito.html">Carrito</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="ia.html">IA</a>
+    </nav>
+  </header>
+
+  <div class="auth-wrapper" style="min-height:100vh;">
+    <div class="auth-card anim-up">
+      <div class="glass-card">
+
+        <div class="text-center mb-3">
+          <a href="inicio.html" style="display:inline-block;margin-bottom:1rem;">
+            <img
+              src="../img/logo.png"
+              alt="Logo"
+              style="width:60px;height:60px;"
+            >
+          </a>
+
+          <h1 style="font-size:1.8rem;">Bienvenido</h1>
+
+          <p class="text-muted mt-1">
+            Ingresa para explorar tus emociones y encontrar
+            herramientas que te ayuden a afrontar diferentes
+            situaciones personales.
+          </p>
+        </div>
+
+        <div class="auth-tabs">
+          <button
+            type="button"
+            class="auth-tab active"
+            id="tab-login"
+            onclick="mostrarPestana('login')"
+          >
+            Iniciar sesión
+          </button>
+
+          <button
+            type="button"
+            class="auth-tab"
+            id="tab-registro"
+            onclick="mostrarPestana('registro')"
+          >
+            Crear cuenta
+          </button>
+        </div>
+
+        <!-- INICIO DE SESIÓN -->
+        <form
+          id="loginForm"
+          class="auth-panel"
+          style="display:flex;flex-direction:column;gap:1rem;"
+        >
+          <div class="input-with-icon">
+            <span class="ico"></span>
+            <input
+              type="text"
+              id="login-user"
+              name="usuario"
+              class="input-field"
+              placeholder="Usuario o correo"
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <div class="input-with-icon">
+            <span class="ico"></span>
+            <input
+              type="password"
+              id="login-pass"
+              name="clave"
+              class="input-field"
+              placeholder="Contraseña"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <button
+            type="submit"
+            id="loginButton"
+            class="btn btn-primary btn-block btn-lg"
+          >
+            Entrar
+          </button>
+        </form>
+
+        <!-- REGISTRO -->
+        <form
+          id="registroForm"
+          class="auth-panel"
+          style="display:none;flex-direction:column;gap:1rem;"
+        >
+          <div class="input-with-icon">
+            <span class="ico"></span>
+            <input
+              type="text"
+              id="reg-user"
+              name="usuario"
+              class="input-field"
+              placeholder="Nombre de usuario"
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <div class="input-with-icon">
+            <span class="ico"></span>
+            <input
+              type="email"
+              id="reg-email"
+              name="correo"
+              class="input-field"
+              placeholder="Correo electrónico"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="input-with-icon">
+            <span class="ico"></span>
+            <input
+              type="password"
+              id="reg-pass"
+              name="clave"
+              class="input-field"
+              placeholder="Contraseña"
+              autocomplete="new-password"
+              minlength="6"
+              required
+            >
+          </div>
+
+          <div class="input-with-icon">
+            <span class="ico"></span>
+            <input
+              type="password"
+              id="reg-confirm"
+              name="confirmar"
+              class="input-field"
+              placeholder="Confirmar contraseña"
+              autocomplete="new-password"
+              minlength="6"
+              required
+            >
+          </div>
+
+          <button
+            type="submit"
+            id="registroButton"
+            class="btn btn-primary btn-block btn-lg"
+          >
+            Registrarse
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/script.js"></script>
+
+  <script>
+     function mostrarPestana(pestana) {
+      var loginForm = document.getElementById("loginForm");
+      var registroForm = document.getElementById("registroForm");
+      var loginTab = document.getElementById("tab-login");
+      var registroTab = document.getElementById("tab-registro");
+
+   
+      var mostrarRegistro = pestana === "registro";
+
+      loginForm.style.display = mostrarRegistro ? "none" : "flex";
+      registroForm.style.display = mostrarRegistro ? "flex" : "none";
+
+     loginTab.classList.toggle("active", !mostrarRegistro);
+      registroTab.classList.toggle("active", mostrarRegistro);
+        }
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const usuario = document
+          .getElementById("login-user")
+          .value
+          .trim();
+
+        const clave = document.getElementById("login-pass").value;
+        const boton = document.getElementById("loginButton");
+
+        if (!usuario || !clave) {
+          alert("Completa el usuario y la contraseña.");
+          return;
+        }
+
+        boton.disabled = true;
+        boton.textContent = "Verificando...";
+
+        const controlador = new AbortController();
+        const tiempoLimite = setTimeout(
+          () => controlador.abort(),
+          15000
+        );
+
+        try {
+          const datos = new FormData();
+          datos.append("usuario", usuario);
+          datos.append("clave", clave);
+
+          const respuesta = await fetch("../php/login.php", {
+            method: "POST",
+            body: datos,
+            credentials: "same-origin",
+            signal: controlador.signal
+          });
+
+          const texto = await respuesta.text();
+          let resultado;
+
+          try {
+            resultado = JSON.parse(texto);
+          } catch {
+            console.error("Respuesta recibida de PHP:", texto);
+
+            throw new Error(
+              "PHP no devolvió JSON válido. Código HTTP: " +
+              respuesta.status +
+              ". Revisa la consola del navegador."
+            );
+          }
+
+          console.log("Respuesta de login.php:", resultado);
+
+          if (!respuesta.ok || !resultado.ok) {
+            throw new Error(
+              resultado.mensaje || "No se pudo iniciar sesión."
+            );
+          }
+
+          const cuenta = resultado.usuario;
+
+          if (!cuenta || !cuenta.rol) {
+            throw new Error(
+              "La respuesta no contiene el rol del usuario."
+            );
+          }
+
+          const rol = String(cuenta.rol).trim().toLowerCase();
+
+          const paginas = {
+            "superadministradora": "panel-superadministradora.html",
+            "superadmin": "panel-superadmin.html",
+            "administradora": "panel-administradora.html",
+            "usuario": "inicio.html"
+          };
+
+          if (!paginas[rol]) {
+            throw new Error("Rol no reconocido: " + rol);
+          }
+
+          // Los datos locales son opcionales.
+          // No deben impedir la redirección si fallan.
+          try {
+            if (typeof setUser === "function") {
+              setUser({
+                id: cuenta.id,
+                name: cuenta.nombre,
+                email: cuenta.correo,
+                rol: rol
+              });
+            }
+          } catch (errorLocal) {
+            console.warn(
+              "No se pudieron guardar datos locales:",
+              errorLocal
+            );
+          }
+
+          // Redirigir después de validar la respuesta del servidor.
+          window.location.assign(paginas[rol]);
+
+        } catch (error) {
+          console.error("Error de inicio de sesión:", error);
+
+          if (error.name === "AbortError") {
+            alert(
+              "El servidor tardó demasiado en responder. " +
+              "Comprueba Apache, PHP y la conexión con MySQL."
+            );
+          } else {
+            alert("No se pudo iniciar sesión:\n" + error.message);
+          }
+        } finally {
+          clearTimeout(tiempoLimite);
+          boton.disabled = false;
+          boton.textContent = "Entrar";
+        }
+      });
+  </script>
+</body>
+</html>

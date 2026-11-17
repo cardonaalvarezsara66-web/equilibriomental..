@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de superadministración - Equilibrio Mental</title>
+
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fira+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+</head>
+
+<body>
+  <header class="navbar" id="navbar">
+    <div class="inner container">
+      <a href="inicio.html" class="logo">
+        <img src="../img/logo.png" alt="Logo de Equilibrio Mental">
+        <span>Equilibrio mental</span>
+      </a>
+
+      <div class="oval-icons">
+        <a href="perfil.html" title="Perfil" aria-label="Perfil">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+        </a>
+
+        <a
+          href="#"
+          onclick="logout(); return false;"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
+        >
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </a>
+
+        <a href="ia.html" title="IA" aria-label="IA">
+          <i class="fa-solid fa-robot" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav"></nav>
+  </header>
+
+  <main class="section super-panel" style="min-height:100vh;padding-top:7rem;">
+    <div class="container">
+      <h1 class="section-title">Panel de superadministración</h1>
+
+      <p class="text-muted mb-3">
+        Gestiona usuarios, disponibilidad y actividad de la plataforma.
+      </p>
+
+      <nav class="super-tabs" aria-label="Secciones de administración">
+        <button
+          class="btn btn-primary"
+          data-tab="usuarios"
+          onclick="mostrarTab('usuarios')"
+        >
+          Usuarios y roles
+        </button>
+
+        <button
+          class="btn btn-outline"
+          data-tab="horarios"
+          onclick="mostrarTab('horarios')"
+        >
+          Horarios
+        </button>
+
+        <button
+          class="btn btn-outline"
+          data-tab="citas"
+          onclick="mostrarTab('citas')"
+        >
+          Citas
+        </button>
+
+        <button
+          class="btn btn-outline"
+          data-tab="compras"
+          onclick="mostrarTab('compras')"
+        >
+          Compras
+        </button>
+
+        <button
+          class="btn btn-outline"
+          data-tab="dispositivos"
+          onclick="mostrarTab('dispositivos')"
+        >
+          Dispositivos
+        </button>
+      </nav>
+
+      <section id="tab-usuarios" class="super-section">
+        <h2>Usuarios y permisos</h2>
+        <p class="text-muted">
+          Asigna cuentas de usuario, administradora o superadministradora.
+        </p>
+        <div id="tabla-usuarios" class="glass-card">Cargando…</div>
+      </section>
+
+      <section id="tab-horarios" class="super-section" hidden>
+        <h2>Disponibilidad semanal</h2>
+        <p class="text-muted">
+          Los horarios se repiten cada semana en el día elegido.
+          Las citas reservadas no se ofrecen de nuevo.
+        </p>
+
+        <form id="form-horario" class="glass-card super-form">
+          <div>
+            <label class="label" for="horario-psicologa">Psicóloga</label>
+            <select
+              class="input-field"
+              id="horario-psicologa"
+              required
+            ></select>
+          </div>
+
+          <div>
+            <label class="label" for="horario-dia">Día de la semana</label>
+            <select class="input-field" id="horario-dia" required>
+              <option value="1">Lunes</option>
+              <option value="2">Martes</option>
+              <option value="3">Miércoles</option>
+              <option value="4">Jueves</option>
+              <option value="5">Viernes</option>
+              <option value="6">Sábado</option>
+              <option value="7">Domingo</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="label" for="horario-inicio">Desde</label>
+            <input
+              class="input-field"
+              id="horario-inicio"
+              type="time"
+              required
+            >
+          </div>
+
+          <div>
+            <label class="label" for="horario-fin">Hasta</label>
+            <input
+              class="input-field"
+              id="horario-fin"
+              type="time"
+              required
+            >
+          </div>
+
+          <button class="btn btn-primary" type="submit">
+            Guardar horario
+          </button>
+        </form>
+
+        <div id="lista-horarios" class="glass-card">
+          Cargando horarios…
+        </div>
+      </section>
+
+      <section id="tab-citas" class="super-section" hidden>
+        <h2>Citas de todos los usuarios</h2>
+        <div id="lista-citas-super" class="super-list">Cargando…</div>
+      </section>
+
+      <section id="tab-compras" class="super-section" hidden>
+        <h2>Pedidos y direcciones de entrega</h2>
+        <div id="lista-pedidos-super" class="super-list">Cargando…</div>
+      </section>
+
+      <section id="tab-dispositivos" class="super-section" hidden>
+        <h2>Dispositivos vinculados</h2>
+        <div id="tabla-dispositivos" class="glass-card">Cargando…</div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../js/script.js"></script>
+
+  <script>
+    var superData = {
+      usuarios: [],
+      psicologas: [],
+      horarios: [],
+      citas: [],
+      dispositivos: [],
+      pedidos: []
+    };
+
+    var dias = {
+      1: "Lunes",
+      2: "Martes",
+      3: "Miércoles",
+      4: "Jueves",
+      5: "Viernes",
+      6: "Sábado",
+      7: "Domingo"
+    };
+
+    function safe(v) {
+      return String(v == null ? "" : v).replace(/[&<>"']/g, function(c) {
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[c];
+      });
+    }
+
+    function mostrarTab(nombre) {
+      document.querySelectorAll(".super-section").forEach(function(s) {
+        s.hidden = s.id !== "tab-" + nombre;
+      });
+
+      document.querySelectorAll("[data-tab]").forEach(function(b) {
+        var activo = b.dataset.tab === nombre;
+        b.classList.toggle("btn-primary", activo);
+        b.classList.toggle("btn-outline", !activo);
+      });
+    }
+
+    async function obtenerJSON(url, opciones) {
+      var controlador = new AbortController();
+      var temporizador = setTimeout(function() {
+        controlador.abort();
+      }, 15000);
+
+      try {
+        var respuesta = await fetch(url, {
+          credentials: "include",
+          cache: "no-store",
+          signal: controlador.signal,
+          ...(opciones || {})
+        });
+
+        var texto = await respuesta.text();
+        var datos;
+
+        try {
+          datos = JSON.parse(texto);
+        } catch (error) {
+          throw new Error(
+            "El archivo PHP no devolvió JSON válido. " +
+            "Revisa el servidor y la consola del navegador."
+          );
+        }
+
+        if (!respuesta.ok) {
+          throw new Error(
+            datos.mensaje ||
+            "Error HTTP " + respuesta.status + " al consultar " + url
+          );
+        }
+
+        return datos;
+      } finally {
+        clearTimeout(temporizador);
+      }
+    }
+
+    function mostrarErrorEnPanel(mensaje) {
+      var ids = [
+        "tabla-usuarios",
+        "lista-horarios",
+        "lista-citas-super",
+        "lista-pedidos-super",
+        "tabla-dispositivos"
+      ];
+
+      ids.forEach(function(id) {
+        var elemento = document.getElementById(id);
+
+        if (elemento) {
+          elemento.textContent = mensaje;
+        }
+      });
+    }
+
+    function tabla(contenedor, titulos) {
+      var t = document.createElement("table");
+      t.className = "super-table";
+
+      var h = t.createTHead().insertRow();
+
+      titulos.forEach(function(x) {
+        var th = document.createElement("th");
+        th.textContent = x;
+        h.appendChild(th);
+      });
+
+      var body = t.createTBody();
+      contenedor.replaceChildren(t);
+      return body;
+    }
+
+    function renderUsuarios() {
+      var box = document.getElementById("tabla-usuarios");
+      var body = tabla(box, ["Nombre", "Correo", "Rol", "Acción"]);
+      var actual = typeof getUser === "function" ? getUser() : null;
+
+      superData.usuarios.forEach(function(u) {
+        var r = body.insertRow();
+
+        r.insertCell().textContent = u.nombre || "";
+        r.insertCell().textContent = u.correo || "";
+
+        var sel = document.createElement("select");
+        sel.className = "input-field";
+
+        [
+          ["usuario", "Usuario"],
+          ["administradora", "Administradora"],
+          ["superadministradora", "Superadministradora"]
+        ].forEach(function(x) {
+          var o = document.createElement("option");
+          o.value = x[0];
+          o.textContent = x[1];
+          o.selected = u.rol === x[0];
+          sel.appendChild(o);
+        });
+
+        sel.disabled =
+          actual &&
+          Number(u.id_usuario) ===
+          Number(actual.id || actual.id_usuario);
+
+        r.insertCell().appendChild(sel);
+
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-primary";
+        btn.textContent = "Guardar rol";
+        btn.disabled = sel.disabled;
+
+        btn.onclick = async function() {
+          try {
+            var fd = new FormData();
+            fd.append("id_usuario", u.id_usuario);
+            fd.append("rol", sel.value);
+
+            var d = await obtenerJSON(
+              "../php/administrar-usuarios.php",
+              {
+                method: "POST",
+                body: fd
+              }
+            );
+
+            alert(d.mensaje || (d.ok ? "Rol actualizado." : "No se pudo actualizar."));
+
+            if (d.ok) {
+              await cargarPanel();
+            }
+          } catch (error) {
+            console.error(error);
+            alert("No se pudo guardar el rol: " + error.message);
+          }
+        };
+
+        r.insertCell().appendChild(btn);
+      });
+
+      if (!superData.usuarios.length) {
+        box.textContent = "No hay cuentas registradas.";
+      }
+    }
+
+    function renderPsicologas() {
+      var sel = document.getElementById("horario-psicologa");
+      sel.replaceChildren();
+
+      superData.psicologas.forEach(function(p) {
+        var o = document.createElement("option");
+        o.value = p.id_psicologa;
+        o.textContent =
+          (p.nombre_completo || "Psicóloga") +
+          (p.especialidad ? " — " + p.especialidad : "");
+        sel.appendChild(o);
+      });
+
+      if (!superData.psicologas.length) {
+        var o = document.createElement("option");
+        o.value = "";
+        o.textContent = "No hay psicólogas registradas";
+        sel.appendChild(o);
+      }
+    }
+
+    function renderHorarios() {
+      var box = document.getElementById("lista-horarios");
+      var body = tabla(
+        box,
+        ["Psicóloga", "Día", "Desde", "Hasta", "Acción"]
+      );
+
+      superData.horarios.forEach(function(h) {
+        var r = body.insertRow();
+
+        r.insertCell().textContent = h.psicologa || "";
+        r.insertCell().textContent =
+          dias[h.dia_semana] || h.dia_semana || "";
+        r.insertCell().textContent =
+          String(h.hora_inicio || "").substring(0, 5);
+        r.insertCell().textContent =
+          String(h.hora_fin || "").substring(0, 5);
+
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn btn-outline";
+        b.textContent = "Eliminar";
+        b.onclick = function() {
+          eliminarHorario(h.id_horario);
+        };
+
+        r.insertCell().appendChild(b);
+      });
+
+      if (!superData.horarios.length) {
+        box.textContent =
+          "Todavía no hay horarios. Agrega uno arriba.";
+      }
+    }
+
+    function renderCitas() {
+      var box = document.getElementById("lista-citas-super");
+      box.replaceChildren();
+
+      if (!superData.citas.length) {
+        box.textContent = "Todavía no hay citas registradas.";
+        return;
+      }
+
+      superData.citas.forEach(function(c) {
+        var card = document.createElement("article");
+        card.className = "glass-card super-record";
+
+        var info = document.createElement("div");
+        var title = document.createElement("strong");
+        title.textContent =
+          (c.usuario || "Usuario") + " · " +
+          (c.psicologa || "Psicóloga");
+        info.appendChild(title);
+
+        var detail = document.createElement("p");
+        detail.textContent =
+          (c.correo || "Sin correo") + " · " +
+          (c.fecha || "Sin fecha") + " · " +
+          String(c.hora || "").substring(0, 5);
+        info.appendChild(detail);
+
+        if (c.notas) {
+          var note = document.createElement("p");
+          note.textContent = "Nota: " + c.notas;
+          info.appendChild(note);
+        }
+
+        var controls = document.createElement("div");
+        controls.className = "super-record__controls";
+
+        var state = document.createElement("select");
+        state.className = "input-field";
+
+        ["pendiente", "confirmada", "cancelada", "realizada"]
+          .forEach(function(x) {
+            var o = document.createElement("option");
+            o.value = x;
+            o.textContent = x[0].toUpperCase() + x.slice(1);
+            o.selected = c.estado === x;
+            state.appendChild(o);
+          });
+
+        controls.appendChild(state);
+
+        var save = document.createElement("button");
+        save.type = "button";
+        save.className = "btn btn-primary";
+        save.textContent = "Guardar estado";
+        save.onclick = function() {
+          actualizarEstadoCita(c.id_cita, state.value);
+        };
+
+        controls.appendChild(save);
+        card.append(info, controls);
+        box.appendChild(card);
+      });
+    }
+
+    function renderDispositivos() {
+      var box = document.getElementById("tabla-dispositivos");
+      var body = tabla(
+        box,
+        ["Usuario", "Correo", "Dispositivo", "Tipo", "Activo", "Vinculado"]
+      );
+
+      superData.dispositivos.forEach(function(d) {
+        var r = body.insertRow();
+
+        [
+          d.usuario,
+          d.correo,
+          d.nombre_dispositivo,
+          d.tipo,
+          Number(d.activo) ? "Sí" : "No",
+          d.vinculado_en
+        ].forEach(function(x) {
+          r.insertCell().textContent = x || "—";
+        });
+      });
+
+      if (!superData.dispositivos.length) {
+        box.textContent = "No hay dispositivos vinculados.";
+      }
+    }
+
+    async function cargarPanel() {
+      try {
+        var d = await obtenerJSON("../php/superadministradora-api.php");
+
+        if (!d.ok) {
+          throw new Error(
+            d.mensaje || "No tienes acceso a este panel."
+          );
+        }
+
+        superData.usuarios = Array.isArray(d.usuarios) ? d.usuarios : [];
+        superData.psicologas = Array.isArray(d.psicologas) ? d.psicologas : [];
+        superData.horarios = Array.isArray(d.horarios) ? d.horarios : [];
+        superData.citas = Array.isArray(d.citas) ? d.citas : [];
+        superData.dispositivos = Array.isArray(d.dispositivos)
+          ? d.dispositivos
+          : [];
+
+        renderUsuarios();
+        renderPsicologas();
+        renderHorarios();
+        renderCitas();
+        renderDispositivos();
+
+        await cargarPedidos();
+
+      } catch (error) {
+        console.error("Error cargando el panel:", error);
+
+        mostrarErrorEnPanel(
+          "No se pudo cargar el panel: " + error.message
+        );
+      }
+    }
+
+    async function cargarPedidos() {
+      var box = document.getElementById("lista-pedidos-super");
+
+      try {
+        var d = await obtenerJSON("../php/administrar-pedidos.php");
+        box.replaceChildren();
+
+        if (!d.ok) {
+          box.textContent =
+            d.mensaje || "No se pudieron cargar los pedidos.";
+          return;
+        }
+
+        var pedidos = Array.isArray(d.pedidos) ? d.pedidos : [];
+
+        if (!pedidos.length) {
+          box.textContent = "Todavía no hay pedidos.";
+          return;
+        }
+
+        pedidos.forEach(function(p) {
+          var card = document.createElement("article");
+          card.className = "glass-card";
+
+          var title = document.createElement("h3");
+          title.textContent =
+            "Pedido #" + p.id_pedido + " · " +
+            (p.usuario || "Usuario") + " · $" +
+            Number(p.total || 0).toFixed(2);
+
+          var address = document.createElement("p");
+          address.textContent =
+            "Entrega: " + (p.nombre_destinatario || "") + " — " +
+            (p.direccion || "") + ", " +
+            (p.ciudad || "") + ", " +
+            (p.departamento || "") + ", " +
+            (p.codigo_postal || "") + ", " +
+            (p.pais || "");
+
+          var items = document.createElement("p");
+          var listaItems = Array.isArray(p.items) ? p.items : [];
+
+          items.textContent =
+            "Productos: " +
+            listaItems.map(function(i) {
+              return (i.nombre_producto || "Producto") +
+                " × " + (i.cantidad || 0);
+            }).join(", ");
+
+          card.append(title, address, items);
+          box.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error("Error cargando pedidos:", error);
+        box.textContent =
+          "No se pudieron cargar los pedidos: " + error.message;
+      }
+    }
+
+    document
+      .getElementById("form-horario")
+      .addEventListener("submit", async function(ev) {
+        ev.preventDefault();
+
+        try {
+          var fd = new FormData();
+          fd.append("accion", "guardar_horario");
+          fd.append(
+            "id_psicologa",
+            document.getElementById("horario-psicologa").value
+          );
+          fd.append(
+            "dia_semana",
+            document.getElementById("horario-dia").value
+          );
+          fd.append(
+            "hora_inicio",
+            document.getElementById("horario-inicio").value
+          );
+          fd.append(
+            "hora_fin",
+            document.getElementById("horario-fin").value
+          );
+
+          var d = await obtenerJSON(
+            "../php/superadministradora-api.php",
+            {
+              method: "POST",
+              body: fd
+            }
+          );
+
+          alert(d.mensaje || (d.ok ? "Horario guardado." : "No se pudo guardar."));
+
+          if (d.ok) {
+            this.reset();
+            await cargarPanel();
+          }
+        } catch (error) {
+          console.error("Error guardando horario:", error);
+          alert("No se pudo guardar el horario: " + error.message);
+        }
+      });
+
+    async function eliminarHorario(id) {
+      if (!confirm("¿Eliminar este horario semanal?")) {
+        return;
+      }
+
+      try {
+        var fd = new FormData();
+        fd.append("accion", "eliminar_horario");
+        fd.append("id_horario", id);
+
+        var d = await obtenerJSON(
+          "../php/superadministradora-api.php",
+          {
+            method: "POST",
+            body: fd
+          }
+        );
+
+        alert(d.mensaje || (d.ok ? "Horario eliminado." : "No se pudo eliminar."));
+
+        if (d.ok) {
+          await cargarPanel();
+        }
+      } catch (error) {
+        console.error("Error eliminando horario:", error);
+        alert("No se pudo eliminar el horario: " + error.message);
+      }
+    }
+
+    async function actualizarEstadoCita(id, estado) {
+      try {
+        var fd = new FormData();
+        fd.append("accion", "actualizar_cita");
+        fd.append("id_cita", id);
+        fd.append("estado", estado);
+
+        var d = await obtenerJSON(
+          "../php/superadministradora-api.php",
+          {
+            method: "POST",
+            body: fd
+          }
+        );
+
+        alert(d.mensaje || (d.ok ? "Estado actualizado." : "No se pudo actualizar."));
+
+        if (d.ok) {
+          await cargarPanel();
+        }
+      } catch (error) {
+        console.error("Error actualizando cita:", error);
+        alert("No se pudo actualizar la cita: " + error.message);
+      }
+    }
+
+    // El rol vigente se valida en MySQL desde superadministradora-api.php.
+    // No bloquear con un rol antiguo guardado en el navegador.
+    async function iniciarPanelSuper() {
+      await cargarPanel();
+    }
+
+    iniciarPanelSuper();
+  </script>
+</body>
+</html>

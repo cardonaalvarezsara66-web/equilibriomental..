@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INFIEL - Detecta la verdad</title>
+  <meta name="description" content="Página web de dispositivos inteligentes para detectar infidelidad">
+  <meta name="author" content="INFIEL">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pagina-inicio">
+    <!-- Importa Font Awesome en tu <head> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <header class="navbar" id="navbar">
+    <div class="inner container">
+      <a href="inicio.html" class="logo">
+        <img src="../img/logo.png" alt="Logo de Equilibrio Mental">
+        <span>Equilibrio mental</span>
+      </a>
+
+      <nav class="center-nav">
+        <a href="inicio.html">Inicio</a>
+        <a href="vinculacion.html">Vinculación</a>
+        <a href="agendar-cita.html" class="active">Agendar cita</a>
+        <a href="tienda.html">Tienda</a>
+      </nav>
+
+      <div class="oval-icons">
+        <a href="perfil.html" title="Perfil" aria-label="Perfil">
+          <i class="fa-solid fa-user"></i>
+        </a>
+
+        <a
+          href="#"
+          onclick="logout(); return false;"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
+>
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </a>
+
+
+        <a href="ia.html" title="IA" aria-label="Inteligencia artificial">
+          <i class="fa-solid fa-robot"></i>
+        </a>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav">
+      <a href="inicio.html">Inicio</a>
+      <a href="vinculacion.html">Vinculación</a>
+      <a href="agendar-cita.html">Agendar cita</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="carrito.html">Carrito</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="ia.html">IA</a>
+    </nav>
+  </header>
+ 
+  <!-- Cart Drawer -->
+  <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="header">
+      <h3>🛍️ Mi Carrito (<span id="cart-count">0</span>)</h3>
+      <button onclick="toggleCart()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;">✕</button>
+    </div>
+    <div class="body" id="cart-items">
+      <div style="text-align:center;padding:4rem 1rem;color:var(--muted-fg);">
+        <p style="font-size:3rem;opacity:.2;"></p>
+        <p style="font-size:1.1rem;margin-top:1rem;">Tu carrito está vacío</p>
+        <p style="font-size:.85rem;">Agrega productos desde la tienda</p>
+      </div>
+    </div>
+    <div class="footer-section" id="cart-footer" style="display:none;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;">
+        <span class="text-muted">Subtotal</span>
+        <span class="font-bold"><span id="cart-total">$0.00</span> USD</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:.75rem;">
+        <span class="text-muted">Envío</span>
+        <span style="font-size:.85rem;color:var(--primary);font-weight:500;">Se calcula al pagar</span>
+      </div>
+      <a href="pagar-compra.html" class="btn btn-primary btn-block" style="margin-bottom:.5rem;">Proceder al pago</a>
+      <a href="tienda.html" class="btn btn-outline btn-block">Seguir comprando</a>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="bg">
+      <img src="../img/hero-bg.jpg" alt="">
+      <div class="overlay"></div>
+    </div>
+    <div class="content container anim-up">
+      <h1><span class="text-gradient">"Descubre</span> lo que otros ocultan."</h1>
+      <p class="anim-up-d1">Tu confianza merece claridad y respuestas.</p>
+      <div class="btns anim-up-d2">
+        <a href="vinculacion.html#senales" class="btn btn-primary btn-lg"> Explorar señales</a>
+        <a href="#como-funcionamos" class="btn btn-outline btn-lg">Cómo funcionamos →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Info -->
+  <section class="section" style="margin-top:-4rem;position:relative;z-index:10;">
+    <div class="container">
+      <div class="glass-card">
+        <h2 class="section-title text-gradient">¿Por qué es importante detectar señales?</h2>
+        <p class="text-muted mb-3" style="max-width:720px;">Detectar comportamientos anormales a tiempo puede ayudarte a proteger tu hogar, fortalecer relaciones y tomar decisiones informadas.</p>
+        <div class="grid-3">
+          <div style="display:flex;align-items:center;gap:.75rem;background:var(--accent);border-radius:var(--radius);padding:1rem;">
+            <span style="color:var(--primary);font-size:1.3rem;">✔</span>
+            <span style="font-weight:500;">Prevención de conflictos</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;background:var(--accent);border-radius:var(--radius);padding:1rem;">
+            <span style="color:var(--primary);font-size:1.3rem;">✔</span>
+            <span style="font-weight:500;">Mejora de la comunicación</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;background:var(--accent);border-radius:var(--radius);padding:1rem;">
+            <span style="color:var(--primary);font-size:1.3rem;">✔</span>
+            <span style="font-weight:500;">Protección emocional</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Señales preview -->
+  <section class="section">
+    <div class="container">
+      <div class="glass-card">
+        <h2 class="section-title">Señales que no debes ignorar</h2>
+        <div class="grid-2">
+          <div style="display:flex;align-items:center;gap:.75rem;background:var(--secondary);border-radius:var(--radius);padding:1rem;">
+            <span style="color:var(--primary);">⚠</span> Cambios repentinos de humor
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;background:var(--secondary);border-radius:var(--radius);padding:1rem;">
+            <span style="color:var(--primary);">⚠</span> Aislamiento o evasión
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;background:var(--secondary);border-radius:var(--radius);padding:1rem;">
+            <span style="color:var(--primary);">⚠</span> Manipulación emocional
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;background:var(--secondary);border-radius:var(--radius);padding:1rem;">
+            <span style="color:var(--primary);">⚠</span> Secretismo excesivo
+          </div>
+        </div>
+        <a href="vinculacion.html#senales" class="btn btn-outline" style="margin-top:2rem;">Ver todas las señales →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Qué hacer -->
+  <section class="section">
+    <div class="container">
+      <div class="glass-card">
+        <h2 class="section-title">¿Qué hacer si detectas algo extraño?</h2>
+        <div class="grid-4">
+          <div style="background:var(--secondary);border-radius:1rem;padding:1.5rem;text-align:center;">
+            <span style="font-size:2.5rem;display:block;margin-bottom:.75rem;"></span>
+            <span style="font-weight:500;font-size:.9rem;">Habla con alguien de confianza</span>
+          </div>
+          <div style="background:var(--secondary);border-radius:1rem;padding:1.5rem;text-align:center;">
+            <span style="font-size:2.5rem;display:block;margin-bottom:.75rem;"></span>
+            <span style="font-weight:500;font-size:.9rem;">Documenta lo que observas</span>
+          </div>
+          <div style="background:var(--secondary);border-radius:1rem;padding:1.5rem;text-align:center;">
+            <span style="font-size:2.5rem;display:block;margin-bottom:.75rem;"></span>
+            <span style="font-weight:500;font-size:.9rem;">Busca ayuda profesional</span>
+          </div>
+          <div style="background:var(--secondary);border-radius:1rem;padding:1.5rem;text-align:center;">
+            <span style="font-size:2.5rem;display:block;margin-bottom:.75rem;"></span>
+            <span style="font-weight:500;font-size:.9rem;">No ignores tu intuición</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Cómo funcionamos -->
+  <section class="section" id="como-funcionamos" style="scroll-margin-top:6rem;">
+    <div class="container">
+      <h2 class="section-title">¿Cómo <span class="text-gradient">funcionamos</span>?</h2>
+      <p class="text-muted mb-3" style="max-width:720px;">Este sitio es una herramienta informativa diseñada por un equipo comprometido con el bienestar emocional. Nuestro objetivo es ayudarte a identificar señales de alerta y tomar decisiones más conscientes.</p>
+      <div class="grid-2">
+        <div class="glass-card">
+          <h3 style="font-size:1.3rem;margin-bottom:.75rem;">Observación y análisis</h3>
+          <p class="text-muted">Te ayudamos a observar y analizar tus emociones, la transparencia en tu relación y las dinámicas que pueden estar afectando tu bienestar.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="font-size:1.3rem;margin-bottom:.75rem;">Contenido educativo</h3>
+          <p class="text-muted">Ofrecemos recursos que explican dinámicas comunes en las relaciones y cómo reconocer señales de manipulación o dependencia emocional.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="font-size:1.3rem;margin-bottom:.75rem;">Herramientas de reflexión</h3>
+          <p class="text-muted">Incluimos guías, test y ejercicios que te ayudan a pensar con claridad sobre tu situación, tus emociones y tus decisiones.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="font-size:1.3rem;margin-bottom:.75rem;">Promoción del respeto</h3>
+          <p class="text-muted">Creemos en la empatía, la comunicación honesta y el consentimiento. Todo el contenido está guiado por estos valores.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problema o necesidad -->
+  <section class="section" id="problema-o-necesidad" style="scroll-margin-top:6rem;">
+    <div class="container">
+      <h2 class="section-title">autoconocimiento<span class="text-gradient"></span></h2>
+      <p class="text-muted mb-3" style="max-width:720px;">Identifica qué es lo que realmente falta en tu relación antes de sacar conclusiones. Estos cuatro pilares te ayudarán a reflexionar.</p>
+      <div class="grid-4">
+        <div class="glass-card">
+          <h3 style="font-size:1.15rem;margin-bottom:.5rem;">Comunicación</h3>
+          <p class="text-muted text-sm">Expresar lo que sentimos, necesitamos y deseamos es la base de la relación.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="font-size:1.15rem;margin-bottom:.5rem;">Confianza</h3>
+          <p class="text-muted text-sm">Nos permite sentirnos seguros y apoyados dentro del vínculo.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="font-size:1.15rem;margin-bottom:.5rem;">Tiempo y atención</h3>
+          <p class="text-muted text-sm">El tiempo dedicado a la relación habla de su calidad y compromiso.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="font-size:1.15rem;margin-bottom:.5rem;">Respeto mutuo</h3>
+          <p class="text-muted text-sm">Aceptar los límites del otro sostiene cualquier relación sana.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+      <footer class="footer">
+  <div class="container footer-layout">
+
+    <img
+      class="footer-logo"
+      src="../img/logo_lola.png"
+      alt="Logo de Lola González"
+    >
+
+    <div class="footer-contenido">
+      <div class="footer-grid">
+        <section>
+          <h3>¿Necesitas ayuda?</h3>
+          <p>Estamos aquí para escucharte. No estás sola.</p>
+        </section>
+
+        <section class="footer-contacto">
+          <a href="mailto:descubretuinfiel@tusitio.com">
+            descubretuinfiel@tusitio.com
+          </a>
+          <a href="tel:+573001234567">+57 300 123 4567</a>
+          <span>WhatsApp disponible 24/7</span>
+        </section>
+
+        <section>
+          <h4>Términos de uso</h4>
+          <p>
+            Este sitio ofrece información orientativa. No sustituye asesoría
+            profesional. Al usar este sitio aceptas nuestras condiciones generales.
+          </p>
+        </section>
+      </div>
+
+      <div class="footer-bottom">Hecho con amor para tu bienestar</div>
+    </div>
+
+    <img
+      class="footer-logo"
+      src="../img/logo_pascual.png"
+      alt="Logo de la Institución Universitaria Pascual Bravo"
+    >
+
+  </div>
+</footer>
+
+
+
+
+<script src="../js/script.js"></script>
+</body>
+</html>
